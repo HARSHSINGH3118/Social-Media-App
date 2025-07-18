@@ -9,10 +9,22 @@ async function createPost({ user_id, content, image_url }) {
   return result.rows[0];
 }
 
-// Get all posts (most recent first)
-async function getAllPosts() {
+// Get all posts with like count and likedByUser
+async function getAllPosts(user_id) {
   const result = await db.query(
-    "SELECT posts.*, users.username FROM posts JOIN users ON posts.user_id = users.id ORDER BY created_at DESC"
+    `
+    SELECT 
+      posts.*, 
+      users.username,
+      COUNT(likes.*) AS like_count,
+      BOOL_OR(likes.user_id = $1) AS liked_by_user
+    FROM posts
+    JOIN users ON posts.user_id = users.id
+    LEFT JOIN likes ON posts.id = likes.post_id
+    GROUP BY posts.id, users.username
+    ORDER BY posts.created_at DESC
+    `,
+    [user_id]
   );
   return result.rows;
 }

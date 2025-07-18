@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const { protect } = require("../middleware/authMiddleware");
+const optionalAuth = require("../middleware/optionalAuth");
 const upload = require("../middleware/uploadMiddleware");
 
 const {
@@ -24,15 +25,11 @@ const {
 // Create a new post (with optional image)
 router.post("/", protect, upload.single("image"), handleCreatePost);
 
-// Get all posts (public)
-router.get("/", handleGetAllPosts);
+// Get all posts (optionally includes likedByUser if token present)
+router.get("/", optionalAuth, handleGetAllPosts);
 
 // 💬 Comment Routes
-
-// Add comment to a specific post
 router.post("/:postId/comments", protect, createComment);
-
-// Get all comments for a specific post
 router.get("/:postId/comments", getComments);
 
 // ❤️ Like or Unlike a post

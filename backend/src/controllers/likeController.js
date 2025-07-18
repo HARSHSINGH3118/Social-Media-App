@@ -9,17 +9,17 @@ async function handleToggleLike(req, res) {
   const user_id = req.user.id;
 
   try {
+    // Toggle like in DB
     const result = await toggleLike(post_id, user_id);
 
-    // Only notify if post was liked (not unliked)
+    // If liked, notify post owner (unless self-like)
     if (result.liked) {
-      const post = await db.query("SELECT user_id FROM posts WHERE id = $1", [
-        post_id,
-      ]);
+      const postOwner = await db.query(
+        "SELECT user_id FROM posts WHERE id = $1",
+        [post_id]
+      );
 
-      const receiver_id = post.rows[0]?.user_id;
-
-      // Don't notify if liking own post
+      const receiver_id = postOwner.rows[0]?.user_id;
       if (receiver_id && receiver_id !== user_id) {
         await createNotification({
           user_id: receiver_id,
@@ -30,8 +30,12 @@ async function handleToggleLike(req, res) {
       }
     }
 
+    // Get updated like count
+    const count = await getLikeCount(post_id);
+
     res.status(200).json({
       liked: result.liked,
+      likes: count,
       message: result.liked ? "Post liked" : "Post unliked",
     });
   } catch (err) {
@@ -40,7 +44,7 @@ async function handleToggleLike(req, res) {
   }
 }
 
-// @desc    Get like count for a post
+// @desc    Get like count
 // @route   GET /api/posts/:postId/likes
 async function handleLikeCount(req, res) {
   const post_id = req.params.postId;

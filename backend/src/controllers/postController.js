@@ -11,6 +11,7 @@ const { addTagsToPost } = require("../models/tagModel");
 
 // @desc    Create a new post with optional image, hashtags, mentions
 // @route   POST /api/posts
+
 async function handleCreatePost(req, res) {
   const { content } = req.body;
   const user_id = req.user.id;
@@ -22,7 +23,7 @@ async function handleCreatePost(req, res) {
   let image_url = null;
 
   try {
-    // 🌩️ Upload image if present
+    // Upload image to Cloudinary if present
     if (req.file) {
       const streamUpload = () =>
         new Promise((resolve, reject) => {
@@ -37,16 +38,16 @@ async function handleCreatePost(req, res) {
       image_url = result.secure_url;
     }
 
-    // 📝 Create the post
+    // Create the post
     const post = await createPost({ user_id, content, image_url });
 
-    // 🏷️ Extract and store hashtags
+    // Extract and store hashtags
     const hashtags = extractHashtags(content);
     if (hashtags.length > 0) {
       await addTagsToPost(post.id, hashtags);
     }
 
-    // 🙋 Extract mentions and send notifications
+    // Extract mentions and create notifications
     const mentions = extractMentions(content);
     for (const username of mentions) {
       const mentionedUser = await getUserByUsername(username);
@@ -67,12 +68,25 @@ async function handleCreatePost(req, res) {
   }
 }
 
-// @desc    Get all posts
+// @desc    Get all posts with like count and likedByUser
 // @route   GET /api/posts
 async function handleGetAllPosts(req, res) {
   try {
-    const posts = await getAllPosts();
-    res.status(200).json(posts);
+    const user_id = req.user?.id || null; // support public view
+    const posts = await getAllPosts(user_id); // fetch with like info
+
+    const formatted = posts.map((post) => ({
+      id: post.id,
+      caption: post.content,
+      imageUrl: post.image_url,
+      tags: post.tags || [],
+      likeCount: parseInt(post.like_count, 10) || 0,
+      likedByUser: post.liked_by_user, // ✅ important
+      createdAt: post.created_at,
+      createdBy: { username: post.username },
+    }));
+
+    res.status(200).json({ posts: formatted });
   } catch (err) {
     console.error("Get Posts Error:", err);
     res.status(500).json({ message: "Server error" });

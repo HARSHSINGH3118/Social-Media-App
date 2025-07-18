@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
 const http = require("http");
+const passport = require("passport");
 
 // Load environment variables
 dotenv.config();
@@ -12,6 +13,7 @@ const postRoutes = require("./routes/postRoutes");
 const tagRoutes = require("./routes/tagRoutes");
 const messageRoutes = require("./routes/messageRoutes");
 const notificationRoutes = require("./routes/notificationRoutes");
+const authRoutes = require("./routes/authRoutes");
 
 // Import socket initializer
 const { initSocket } = require("./socket");
@@ -20,28 +22,20 @@ const { initSocket } = require("./socket");
 const app = express();
 const server = http.createServer(app);
 
-// Middleware
-app.use(cors());
+// ✅ CORRECT CORS CONFIGURATION
+app.use(
+  cors({
+    origin: "http://localhost:3000", // frontend
+    credentials: true,
+  })
+);
+
+// ✅ Middleware
 app.use(express.json());
-
-// API Routes
-app.use("/api/users", userRoutes);
-app.use("/api/posts", postRoutes);
-app.use("/api/tags", tagRoutes);
-app.use("/api/messages", messageRoutes);
-app.use("/api/notifications", notificationRoutes);
-
-// Real-time WebSocket Initialization
-initSocket(server);
-
-const passport = require("passport");
+app.use(passport.initialize());
 require("./config/passport");
 
-const authRoutes = require("./routes/authRoutes");
-
-app.use(passport.initialize());
-app.use("/auth", authRoutes); // after passport init
-
+// ✅ Debug Logger
 app.use((req, res, next) => {
   console.log(
     "🛰️  Incoming:",
@@ -53,7 +47,18 @@ app.use((req, res, next) => {
   next();
 });
 
-// Start the server
+// ✅ API Routes
+app.use("/api/users", userRoutes);
+app.use("/api/posts", postRoutes);
+app.use("/api/tags", tagRoutes);
+app.use("/api/messages", messageRoutes);
+app.use("/api/notifications", notificationRoutes);
+app.use("/auth", authRoutes);
+
+// ✅ Real-time WebSocket Initialization
+initSocket(server);
+
+// ✅ Start the server
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => {
   console.log(`🚀 Server running at http://localhost:${PORT}`);

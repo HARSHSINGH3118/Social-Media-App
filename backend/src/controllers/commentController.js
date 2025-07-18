@@ -16,9 +16,10 @@ async function createComment(req, res) {
   }
 
   try {
+    // 1. Add the comment
     const comment = await addComment({ post_id, user_id, content });
 
-    // 🔔 Notify post owner (if not the commenter)
+    // 2. Notify the post owner if it's not the commenter
     const post = await db.query("SELECT user_id FROM posts WHERE id = $1", [
       post_id,
     ]);
@@ -33,7 +34,7 @@ async function createComment(req, res) {
       });
     }
 
-    // 🔔 Notify mentioned users
+    // 3. Notify mentioned users
     const mentions = extractMentions(content);
     for (const username of mentions) {
       const mentionedUser = await getUserByUsername(username);
@@ -46,6 +47,12 @@ async function createComment(req, res) {
         });
       }
     }
+
+    // ✅ 4. Add the commenter's username to the response
+    const user = await db.query("SELECT username FROM users WHERE id = $1", [
+      user_id,
+    ]);
+    comment.username = user.rows[0]?.username || "unknown";
 
     res.status(201).json(comment);
   } catch (err) {
