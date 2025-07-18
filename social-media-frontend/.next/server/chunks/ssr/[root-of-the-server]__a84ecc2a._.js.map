@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 6, "column": 0}, "map": {"version":3,"sources":[],"names":[],"mappings":"","debugId":null}},
+    {"offset": {"line": 18, "column": 0}, "map": {"version":3,"sources":["file:///H:/Repositories/Social_media_app/social-media-frontend/src/app/page.jsx"],"sourcesContent":["export default function HomePage() {\n  return (\n    <div className=\"flex items-center justify-center min-h-screen\">\n      <h1 className=\"text-3xl font-bold\">Welcome to the Social Media App</h1>\n    </div>\n  );\n}\n"],"names":[],"mappings":";;;;;AAAe,SAAS;IACtB,qBACE,8OAAC;QAAI,WAAU;kBACb,cAAA,8OAAC;YAAG,WAAU;sBAAqB;;;;;;;;;;;AAGzC","debugId":null}}]
+}

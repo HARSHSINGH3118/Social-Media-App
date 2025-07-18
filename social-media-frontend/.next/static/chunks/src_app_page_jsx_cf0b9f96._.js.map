@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 7, "column": 0}, "map": {"version":3,"sources":["file:///H:/Repositories/Social_media_app/social-media-frontend/src/app/page.jsx"],"sourcesContent":["\"use client\";\nimport { useEffect } from \"react\";\nimport { useRouter } from \"next/navigation\";\nimport { useAuth } from \"../contexts/AuthContext\";\n\nexport default function HomePage() {\n  const { user, loading } = useAuth();\n  const router = useRouter();\n\n  useEffect(() => {\n    if (!loading && user) {\n      router.push(\"/dashboard\");\n    }\n  }, [user, loading]);\n\n  if (loading) return null;\n\n  return (\n    <div className=\"min-h-screen flex justify-center items-center\">\n      <h1 className=\"text-2xl font-bold\">Welcome to Social App</h1>\n    </div>\n  );\n}\n"],"names":[],"mappings":";;;;AACA;AACA;AACA;;;AAHA;;;;AAKe,SAAS;;IACtB,MAAM,EAAE,IAAI,EAAE,OAAO,EAAE,GAAG,CAAA,GAAA,kIAAA,CAAA,UAAO,AAAD;IAChC,MAAM,SAAS,CAAA,GAAA,qIAAA,CAAA,YAAS,AAAD;IAEvB,CAAA,GAAA,6JAAA,CAAA,YAAS,AAAD;8BAAE;YACR,IAAI,CAAC,WAAW,MAAM;gBACpB,OAAO,IAAI,CAAC;YACd;QACF;6BAAG;QAAC;QAAM;KAAQ;IAElB,IAAI,SAAS,OAAO;IAEpB,qBACE,6LAAC;QAAI,WAAU;kBACb,cAAA,6LAAC;YAAG,WAAU;sBAAqB;;;;;;;;;;;AAGzC;GAjBwB;;QACI,kIAAA,CAAA,UAAO;QAClB,qIAAA,CAAA,YAAS;;;KAFF","debugId":null}}]
+}
