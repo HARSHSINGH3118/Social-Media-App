@@ -144,16 +144,25 @@ __turbopack_context__.s({
 });
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$axios$2f$lib$2f$axios$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/axios/lib/axios.js [app-ssr] (ecmascript)");
 ;
-const API = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$axios$2f$lib$2f$axios$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"].create({
-    baseURL: "http://localhost:5000/api"
+const api = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$axios$2f$lib$2f$axios$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"].create({
+    baseURL: "http://localhost:5000/api",
+    withCredentials: false
 });
-API.interceptors.request.use((config)=>{
-    const token = ("TURBOPACK compile-time falsy", 0) ? "TURBOPACK unreachable" : null;
-    if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
-    ;
+api.interceptors.request.use((config)=>{
+    try {
+        const token = localStorage.getItem("token");
+        if (token) {
+            config.headers = {
+                ...config.headers,
+                Authorization: `Bearer ${token}`
+            };
+        }
+    } catch (err) {
+        console.error("Interceptor Error:", err);
+    }
     return config;
 });
-const __TURBOPACK__default__export__ = API;
+const __TURBOPACK__default__export__ = api;
 }),
 "[project]/src/contexts/AuthContext.jsx [app-ssr] (ecmascript)": ((__turbopack_context__) => {
 "use strict";

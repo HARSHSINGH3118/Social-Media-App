@@ -16,14 +16,17 @@ export default function LoginPage() {
     e.preventDefault();
     try {
       const res = await API.post("/users/login", { email, password });
-      login(res.data.token);
+
+      // ✅ Save token and fetch user profile
+      await login(res.data.token);
     } catch (err) {
-      setError("Invalid credentials");
+      console.error("❌ Login error:", err?.response?.data || err.message);
+      setError(err?.response?.data?.message || "Invalid credentials");
     }
   };
 
   const handleGoogleLogin = () => {
-    window.location.href = "http://localhost:5000/auth/google";
+    window.location.href = "http://localhost:5000/auth/google"; // ✅ Backend Google OAuth entry point
   };
 
   return (
@@ -37,6 +40,7 @@ export default function LoginPage() {
         </h2>
         <p className="text-center text-gray-600 mb-6">Login to your account</p>
         {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
+
         <form onSubmit={handleLogin} className="space-y-4">
           <input
             type="email"
@@ -61,18 +65,21 @@ export default function LoginPage() {
             Login
           </button>
         </form>
+
         <div className="flex items-center my-4">
           <div className="flex-grow h-px bg-gray-300" />
           <span className="mx-4 text-gray-400 text-sm">or continue with</span>
           <div className="flex-grow h-px bg-gray-300" />
         </div>
+
         <button
           onClick={handleGoogleLogin}
           className="w-full border border-gray-300 py-2 rounded-lg flex justify-center items-center gap-2 hover:bg-gray-100 transition text-gray-700"
         >
-          <img src="/google.svg" alt="Google" className="w-5 h-5 " />
+          <img src="/google.svg" alt="Google" className="w-5 h-5" />
           Login with Google
         </button>
+
         <p className="mt-6 text-sm text-center text-gray-600">
           Don’t have an account?{" "}
           <span

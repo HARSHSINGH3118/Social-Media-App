@@ -57,7 +57,7 @@ const CommentSection = ({ postId }) => {
               placeholder="Write a comment..."
               value={newComment}
               onChange={(e) => setNewComment(e.target.value)}
-              className="flex-1 border px-3 py-2 text-sm rounded-md placeholder-gray-600"
+              className="flex-1 border px-3 py-2 text-sm rounded-md placeholder-gray-600 text-black"
             />
             <button
               type="submit"

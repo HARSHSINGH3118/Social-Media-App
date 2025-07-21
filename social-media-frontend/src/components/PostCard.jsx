@@ -7,7 +7,8 @@ const PostCard = ({ post }) => {
   const { id, imageUrl, caption, tags, createdBy, likedByUser, likeCount } =
     post;
 
-  const [liked, setLiked] = useState(likedByUser || false);
+  const [liked, setLiked] = useState(!!likedByUser);
+
   const [likes, setLikes] = useState(likeCount || 0);
 
   const toggleLike = async () => {
@@ -27,7 +28,9 @@ const PostCard = ({ post }) => {
         <div className="font-semibold mb-2 text-neutral-800">
           @{createdBy?.username || "Unknown"}
         </div>
-        <p className="text-gray-800 mb-2">{caption}</p>
+        <p className="text-gray-800 mb-2">
+          {caption.replace(/#[\w_]+/g, "").trim()}
+        </p>
 
         <div className="flex flex-wrap gap-2 mb-2">
           {tags?.map((tag, i) => (
