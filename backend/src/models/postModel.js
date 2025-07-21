@@ -16,11 +16,14 @@ async function getAllPosts(user_id) {
     SELECT 
       posts.*, 
       users.username,
-      COUNT(likes.*) AS like_count,
-      BOOL_OR(likes.user_id = $1) AS liked_by_user
+      ARRAY_REMOVE(ARRAY_AGG(DISTINCT tags.name), NULL) AS tags,
+      COALESCE(COUNT(DISTINCT likes.user_id), 0) AS like_count,
+      COALESCE(BOOL_OR(likes.user_id = $1), false) AS liked_by_user
     FROM posts
     JOIN users ON posts.user_id = users.id
     LEFT JOIN likes ON posts.id = likes.post_id
+    LEFT JOIN post_tags ON posts.id = post_tags.post_id
+    LEFT JOIN tags ON post_tags.tag_id = tags.id
     GROUP BY posts.id, users.username
     ORDER BY posts.created_at DESC
     `,
