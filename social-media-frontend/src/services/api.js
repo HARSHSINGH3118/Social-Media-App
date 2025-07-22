@@ -1,17 +1,27 @@
 // src/services/api.js
 import axios from "axios";
 
+// Only read window.location.hostname when in the browser
+const getHost = () =>
+  typeof window !== "undefined" ? window.location.hostname : "localhost";
+
 const api = axios.create({
-  baseURL: "http://localhost:5000", // no trailing slash
-  withCredentials: true, // keep if using cookies
+  baseURL: `http://${getHost()}:5000/api`,
+  withCredentials: true,
 });
 
-// Optional: Add auth token if needed
+// Only attach the interceptor in the browser
 if (typeof window !== "undefined") {
-  const token = localStorage.getItem("token");
-  if (token) {
-    api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-  }
+  api.interceptors.request.use((config) => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      config.headers = {
+        ...config.headers,
+        Authorization: `Bearer ${token}`,
+      };
+    }
+    return config;
+  });
 }
 
 export default api;

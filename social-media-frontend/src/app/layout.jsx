@@ -1,18 +1,18 @@
-// src/app/layout.jsx
-import "./globals.css";
-import { AuthProvider } from "@/contexts/AuthContext";
-import Navbar from "@/components/Navbar"; // ✅ optional
+// app/layout.jsx
+"use client";
 
-export const metadata = {
-  title: "Social Media App",
-  description: "Login to get started",
-};
+import { AuthProvider } from "@/contexts/AuthContext";
+import { SocketProvider } from "@/contexts/SocketContext";
+import "./globals.css";
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className="bg-gray-900 text-white">
-        <AuthProvider>{children}</AuthProvider>
+      <head />
+      <body className="min-h-screen bg-gray-900 text-white">
+        <AuthProvider>
+          <SocketProvider>{children}</SocketProvider>
+        </AuthProvider>
       </body>
     </html>
   );

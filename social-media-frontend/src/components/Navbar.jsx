@@ -1,3 +1,4 @@
+// src/components/Navbar.jsx
 "use client";
 
 import { useAuth } from "@/contexts/AuthContext";
@@ -26,6 +27,12 @@ export default function Navbar() {
               className="text-gray-300 hover:text-blue-400 transition"
             >
               My Profile
+            </button>
+            <button
+              onClick={() => router.push("/messages")}
+              className="text-gray-300 hover:text-blue-400 transition"
+            >
+              Messages
             </button>
             <button
               onClick={logout}
