@@ -1,9 +1,9 @@
-// src/app/dashboard/page.jsx
 "use client";
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useAuth } from "../../contexts/AuthContext";
+import { useAuth } from "@/contexts/AuthContext";
+import AppLayout from "@/components/AppLayout"; // ✅ Add this
 
 export default function DashboardPage() {
   const { user, loading, logout } = useAuth();
@@ -24,17 +24,17 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center gap-4 bg-gray-100 p-8">
-      <h1 className="text-3xl font-bold text-gray-800">
-        Welcome, {user?.username}!
-      </h1>
+    <AppLayout>
+      <div className="flex flex-col items-center justify-center gap-4 bg-gray-900 text-white p-8 min-h-screen">
+        <h1 className="text-3xl font-bold">Welcome, {user?.username}!</h1>
 
-      <button
-        onClick={logout}
-        className="bg-red-500 hover:bg-red-600 text-white font-semibold px-6 py-2 rounded-md shadow"
-      >
-        Logout
-      </button>
-    </div>
+        <button
+          onClick={logout}
+          className="bg-red-500 hover:bg-red-600 text-white font-semibold px-6 py-2 rounded-md shadow"
+        >
+          Logout
+        </button>
+      </div>
+    </AppLayout>
   );
 }

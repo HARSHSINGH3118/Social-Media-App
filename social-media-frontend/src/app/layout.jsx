@@ -1,6 +1,7 @@
 // src/app/layout.jsx
 import "./globals.css";
-import { AuthProvider } from "../contexts/AuthContext";
+import { AuthProvider } from "@/contexts/AuthContext";
+import Navbar from "@/components/Navbar"; // ✅ optional
 
 export const metadata = {
   title: "Social Media App",
@@ -10,7 +11,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body>
+      <body className="bg-gray-900 text-white">
         <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
