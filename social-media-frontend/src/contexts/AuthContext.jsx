@@ -28,8 +28,9 @@ export const AuthProvider = ({ children }) => {
       const res = await API.get("/users/profile", {
         headers: { Authorization: `Bearer ${tok}` },
       });
-      console.log("Fetched user:", res.data);
-      setUser(res.data);
+      // res.data is now { user: {...}, posts: [...] }
+      console.log("Fetched profile payload:", res.data);
+      setUser(res.data.user);
     } catch (err) {
       console.error("Failed to fetch profile:", err.message);
       setUser(null);

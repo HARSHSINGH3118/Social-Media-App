@@ -22,7 +22,7 @@ export default function Navbar() {
         {user && (
           <>
             <button
-              onClick={() => router.push(`/profile/${user.username}`)}
+              onClick={() => router.push(`/profile/${user.id}`)}
               className="text-gray-300 hover:text-blue-400 transition"
             >
               My Profile

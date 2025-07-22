@@ -79,8 +79,9 @@ const AuthProvider = (param)=>{
                     Authorization: "Bearer ".concat(tok)
                 }
             });
-            console.log("Fetched user:", res.data);
-            setUser(res.data);
+            // res.data is now { user: {...}, posts: [...] }
+            console.log("Fetched profile payload:", res.data);
+            setUser(res.data.user);
         } catch (err) {
             console.error("Failed to fetch profile:", err.message);
             setUser(null);
@@ -114,7 +115,7 @@ const AuthProvider = (param)=>{
         children: children
     }, void 0, false, {
         fileName: "[project]/src/contexts/AuthContext.jsx",
-        lineNumber: 59,
+        lineNumber: 60,
         columnNumber: 5
     }, ("TURBOPACK compile-time value", void 0));
 };
@@ -176,7 +177,7 @@ function Navbar() {
                 children: user && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Fragment"], {
                     children: [
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
-                            onClick: ()=>router.push("/profile/".concat(user.username)),
+                            onClick: ()=>router.push("/profile/".concat(user.id)),
                             className: "text-gray-300 hover:text-blue-400 transition",
                             children: "My Profile"
                         }, void 0, false, {

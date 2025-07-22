@@ -5,7 +5,7 @@
 
 var { k: __turbopack_refresh__, m: module } = __turbopack_context__;
 {
-// Updated ProfilePage.jsx with Bio + Stats Bar
+// ProfilePage.jsx with editable username/email + follow system
 __turbopack_context__.s({
     "default": ()=>ProfilePage
 });
@@ -31,7 +31,12 @@ function ProfilePage() {
     const [posts, setPosts] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])([]);
     const [uploading, setUploading] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
     const [editingBio, setEditingBio] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
+    const [editingDetails, setEditingDetails] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
     const [bioInput, setBioInput] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])("");
+    const [usernameInput, setUsernameInput] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])("");
+    const [emailInput, setEmailInput] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])("");
+    const [followerCount, setFollowerCount] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(0);
+    const [isFollowing, setIsFollowing] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
     const isOwnProfile = (currentUser === null || currentUser === void 0 ? void 0 : currentUser.username) === (user === null || user === void 0 ? void 0 : user.username);
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
         "ProfilePage.useEffect": ()=>{
@@ -42,7 +47,10 @@ function ProfilePage() {
                         const res = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$api$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"].get("/users/profile/".concat(username));
                         setUser(res.data.user);
                         setBioInput(res.data.user.bio || "");
+                        setUsernameInput(res.data.user.username);
+                        setEmailInput(res.data.user.email);
                         setPosts(res.data.posts || []);
+                        fetchFollowData(res.data.user.id);
                     } catch (err) {
                         console.error("Error fetching profile:", err);
                     }
@@ -53,6 +61,30 @@ function ProfilePage() {
     }["ProfilePage.useEffect"], [
         username
     ]);
+    const fetchFollowData = async (profileId)=>{
+        try {
+            const res = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$api$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"].get("/users/".concat(profileId, "/followers"));
+            setFollowerCount(res.data.length);
+            setIsFollowing(res.data.some((f)=>f.id === (currentUser === null || currentUser === void 0 ? void 0 : currentUser.id)));
+        } catch (err) {
+            console.error("Error fetching followers:", err);
+        }
+    };
+    const handleFollowToggle = async ()=>{
+        if (!user) return;
+        try {
+            if (isFollowing) {
+                await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$api$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"].delete("/users/".concat(user.id, "/follow"));
+                setFollowerCount((prev)=>prev - 1);
+            } else {
+                await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$api$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"].post("/users/".concat(user.id, "/follow"));
+                setFollowerCount((prev)=>prev + 1);
+            }
+            setIsFollowing(!isFollowing);
+        } catch (err) {
+            console.error("Follow/unfollow error:", err);
+        }
+    };
     const handleAvatarChange = async (e)=>{
         const file = e.target.files[0];
         if (!file) return;
@@ -86,41 +118,53 @@ function ProfilePage() {
             console.error("Bio update failed:", err);
         }
     };
+    const handleDetailsSave = async ()=>{
+        try {
+            await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$api$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"].put("/users/profile", {
+                username: usernameInput,
+                email: emailInput
+            });
+            setEditingDetails(false);
+            location.reload();
+        } catch (err) {
+            console.error("Update failed:", err);
+        }
+    };
     if (!user) return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
         className: "text-center mt-20 text-gray-300",
         children: "Loading profile..."
     }, void 0, false, {
         fileName: "[project]/src/app/profile/[username]/page.jsx",
-        lineNumber: 69,
+        lineNumber: 116,
         columnNumber: 7
     }, this);
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
         className: "p-6 max-w-4xl mx-auto",
         children: [
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                className: "flex items-center gap-6 mb-6",
+                className: "flex flex-col sm:flex-row items-center sm:items-start gap-6 mb-8",
                 children: [
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                        className: "relative w-24 h-24 group",
+                        className: "relative w-28 h-28 group",
                         children: [
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("img", {
                                 src: user.avatar || "/default-avatar.png",
                                 alt: "Avatar",
-                                className: "w-24 h-24 rounded-full object-cover border-2 border-blue-400"
+                                className: "w-full h-full rounded-full object-cover border-4 border-white shadow-md"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/profile/[username]/page.jsx",
-                                lineNumber: 76,
+                                lineNumber: 123,
                                 columnNumber: 11
                             }, this),
                             isOwnProfile && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
-                                className: "absolute inset-0 flex items-center justify-center rounded-full bg-black/40 opacity-0 group-hover:opacity-100 cursor-pointer",
+                                className: "absolute inset-0 flex items-center justify-center rounded-full bg-black/50 opacity-0 group-hover:opacity-100 cursor-pointer transition-opacity",
                                 children: [
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$pencil$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Pencil$3e$__["Pencil"], {
                                         size: 20,
                                         className: "text-white"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/profile/[username]/page.jsx",
-                                        lineNumber: 83,
+                                        lineNumber: 130,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -130,48 +174,106 @@ function ProfilePage() {
                                         className: "hidden"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/profile/[username]/page.jsx",
-                                        lineNumber: 84,
+                                        lineNumber: 131,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/profile/[username]/page.jsx",
-                                lineNumber: 82,
+                                lineNumber: 129,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/profile/[username]/page.jsx",
-                        lineNumber: 75,
+                        lineNumber: 122,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                        className: "flex-1",
+                        className: "flex-1 text-center sm:text-left",
                         children: [
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h1", {
-                                className: "text-3xl font-bold text-blue-400",
+                            editingDetails ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                className: "space-y-2 mb-2",
                                 children: [
-                                    "@",
-                                    user.username
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                                        type: "text",
+                                        value: usernameInput,
+                                        onChange: (e)=>setUsernameInput(e.target.value),
+                                        className: "px-2 py-1 rounded bg-gray-800 border text-white w-full sm:w-2/3"
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/app/profile/[username]/page.jsx",
+                                        lineNumber: 144,
+                                        columnNumber: 15
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                                        type: "email",
+                                        value: emailInput,
+                                        onChange: (e)=>setEmailInput(e.target.value),
+                                        className: "px-2 py-1 rounded bg-gray-800 border text-white w-full sm:w-2/3"
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/app/profile/[username]/page.jsx",
+                                        lineNumber: 150,
+                                        columnNumber: 15
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                        onClick: handleDetailsSave,
+                                        className: "px-3 py-1 bg-blue-500 text-white rounded",
+                                        children: "Save"
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/app/profile/[username]/page.jsx",
+                                        lineNumber: 156,
+                                        columnNumber: 15
+                                    }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/profile/[username]/page.jsx",
-                                lineNumber: 95,
-                                columnNumber: 11
-                            }, this),
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                                className: "text-gray-400 mb-1",
+                                lineNumber: 143,
+                                columnNumber: 13
+                            }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Fragment"], {
                                 children: [
-                                    "Joined: ",
-                                    new Date(user.created_at).toLocaleDateString()
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h1", {
+                                        className: "text-3xl font-bold text-blue-400 mb-1",
+                                        children: [
+                                            "@",
+                                            user.username
+                                        ]
+                                    }, void 0, true, {
+                                        fileName: "[project]/src/app/profile/[username]/page.jsx",
+                                        lineNumber: 165,
+                                        columnNumber: 15
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                        className: "text-gray-400 mb-2",
+                                        children: user.email
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/app/profile/[username]/page.jsx",
+                                        lineNumber: 168,
+                                        columnNumber: 15
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                        className: "text-gray-400 mb-2",
+                                        children: [
+                                            "Joined: ",
+                                            new Date(user.created_at).toLocaleDateString()
+                                        ]
+                                    }, void 0, true, {
+                                        fileName: "[project]/src/app/profile/[username]/page.jsx",
+                                        lineNumber: 169,
+                                        columnNumber: 15
+                                    }, this),
+                                    isOwnProfile && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                        onClick: ()=>setEditingDetails(true),
+                                        className: "text-sm text-blue-400 underline",
+                                        children: "Edit Username / Email"
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/app/profile/[username]/page.jsx",
+                                        lineNumber: 173,
+                                        columnNumber: 17
+                                    }, this)
                                 ]
-                            }, void 0, true, {
-                                fileName: "[project]/src/app/profile/[username]/page.jsx",
-                                lineNumber: 96,
-                                columnNumber: 11
-                            }, this),
+                            }, void 0, true),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                className: "text-white mb-2",
+                                className: "text-white my-3",
                                 children: editingBio ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                     className: "flex gap-2 items-center",
                                     children: [
@@ -182,7 +284,7 @@ function ProfilePage() {
                                             className: "px-2 py-1 rounded bg-gray-800 border text-white"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/profile/[username]/page.jsx",
-                                            lineNumber: 103,
+                                            lineNumber: 186,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -191,22 +293,22 @@ function ProfilePage() {
                                             children: "Save"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/profile/[username]/page.jsx",
-                                            lineNumber: 109,
+                                            lineNumber: 192,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/profile/[username]/page.jsx",
-                                    lineNumber: 102,
+                                    lineNumber: 185,
                                     columnNumber: 15
                                 }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                    className: "flex items-center gap-2",
+                                    className: "flex items-center gap-2 justify-center sm:justify-start",
                                     children: [
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                             children: user.bio || (isOwnProfile ? "No bio added." : "")
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/profile/[username]/page.jsx",
-                                            lineNumber: 118,
+                                            lineNumber: 201,
                                             columnNumber: 17
                                         }, this),
                                         isOwnProfile && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -216,27 +318,27 @@ function ProfilePage() {
                                                 className: "text-blue-400"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/profile/[username]/page.jsx",
-                                                lineNumber: 121,
+                                                lineNumber: 204,
                                                 columnNumber: 21
                                             }, this)
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/profile/[username]/page.jsx",
-                                            lineNumber: 120,
+                                            lineNumber: 203,
                                             columnNumber: 19
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/profile/[username]/page.jsx",
-                                    lineNumber: 117,
+                                    lineNumber: 200,
                                     columnNumber: 15
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/app/profile/[username]/page.jsx",
-                                lineNumber: 100,
+                                lineNumber: 183,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                className: "flex gap-6 text-white",
+                                className: "flex gap-6 justify-center sm:justify-start text-white items-center",
                                 children: [
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                         children: [
@@ -245,31 +347,31 @@ function ProfilePage() {
                                                 children: posts.length
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/profile/[username]/page.jsx",
-                                                lineNumber: 130,
+                                                lineNumber: 213,
                                                 columnNumber: 15
                                             }, this),
                                             " Posts"
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/profile/[username]/page.jsx",
-                                        lineNumber: 129,
+                                        lineNumber: 212,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                         children: [
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                 className: "font-semibold",
-                                                children: "0"
+                                                children: followerCount
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/profile/[username]/page.jsx",
-                                                lineNumber: 133,
+                                                lineNumber: 216,
                                                 columnNumber: 15
                                             }, this),
                                             " Followers"
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/profile/[username]/page.jsx",
-                                        lineNumber: 132,
+                                        lineNumber: 215,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -279,40 +381,49 @@ function ProfilePage() {
                                                 children: "0"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/profile/[username]/page.jsx",
-                                                lineNumber: 136,
+                                                lineNumber: 219,
                                                 columnNumber: 15
                                             }, this),
                                             " Following"
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/profile/[username]/page.jsx",
-                                        lineNumber: 135,
+                                        lineNumber: 218,
                                         columnNumber: 13
+                                    }, this),
+                                    !isOwnProfile && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                        onClick: handleFollowToggle,
+                                        className: "px-3 py-1 rounded text-sm font-semibold transition-colors duration-200 ".concat(isFollowing ? "bg-white text-blue-600 border border-blue-600 hover:bg-gray-100" : "bg-blue-500 text-white hover:bg-blue-600"),
+                                        children: isFollowing ? "Unfollow" : "Follow"
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/app/profile/[username]/page.jsx",
+                                        lineNumber: 222,
+                                        columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/profile/[username]/page.jsx",
-                                lineNumber: 128,
+                                lineNumber: 211,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/profile/[username]/page.jsx",
-                        lineNumber: 94,
+                        lineNumber: 141,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/profile/[username]/page.jsx",
-                lineNumber: 74,
+                lineNumber: 121,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
-                className: "text-2xl font-semibold mb-2 text-white",
+                className: "text-2xl font-semibold mb-3 text-white",
                 children: "Posts"
             }, void 0, false, {
                 fileName: "[project]/src/app/profile/[username]/page.jsx",
-                lineNumber: 142,
+                lineNumber: 237,
                 columnNumber: 7
             }, this),
             posts.length === 0 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -320,12 +431,12 @@ function ProfilePage() {
                 children: "No posts yet."
             }, void 0, false, {
                 fileName: "[project]/src/app/profile/[username]/page.jsx",
-                lineNumber: 144,
+                lineNumber: 239,
                 columnNumber: 9
             }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                className: "grid grid-cols-1 md:grid-cols-2 gap-4",
+                className: "grid grid-cols-1 md:grid-cols-2 gap-6",
                 children: posts.map((post)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                        className: "bg-white rounded-lg p-4 shadow text-black",
+                        className: "bg-white rounded-lg p-4 shadow hover:scale-[1.01] transition-transform text-black",
                         children: [
                             post.image_url && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("img", {
                                 src: post.image_url,
@@ -333,7 +444,7 @@ function ProfilePage() {
                                 className: "w-full h-60 object-cover mb-2 rounded"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/profile/[username]/page.jsx",
-                                lineNumber: 153,
+                                lineNumber: 248,
                                 columnNumber: 17
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -341,7 +452,7 @@ function ProfilePage() {
                                 children: post.content
                             }, void 0, false, {
                                 fileName: "[project]/src/app/profile/[username]/page.jsx",
-                                lineNumber: 159,
+                                lineNumber: 254,
                                 columnNumber: 15
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -352,28 +463,28 @@ function ProfilePage() {
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/profile/[username]/page.jsx",
-                                lineNumber: 160,
+                                lineNumber: 255,
                                 columnNumber: 15
                             }, this)
                         ]
                     }, post.id, true, {
                         fileName: "[project]/src/app/profile/[username]/page.jsx",
-                        lineNumber: 148,
+                        lineNumber: 243,
                         columnNumber: 13
                     }, this))
             }, void 0, false, {
                 fileName: "[project]/src/app/profile/[username]/page.jsx",
-                lineNumber: 146,
+                lineNumber: 241,
                 columnNumber: 9
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/app/profile/[username]/page.jsx",
-        lineNumber: 73,
+        lineNumber: 120,
         columnNumber: 5
     }, this);
 }
-_s(ProfilePage, "565I5Djwc+PiYF4cpqMo8BqD8g8=", false, function() {
+_s(ProfilePage, "T4MGQ5+SEKzxOhm/WqeUThgEI4U=", false, function() {
     return [
         __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useParams"],
         __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$contexts$2f$AuthContext$2e$jsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useAuth"]
