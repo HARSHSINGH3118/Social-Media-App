@@ -7,25 +7,10 @@ const {
   updateUserProfile,
   findUserByEmail,
   createOAuthUser,
-  getUserByUsernameWithPosts,
+  getUserByUsernameWithPosts, // still available if you need it elsewhere
 } = require("../models/userModel");
-
+const { getPostsByUserId } = require("../models/postModel");
 const generateToken = require("../utils/generateToken");
-
-// =============================
-// 📄 Public Profile (by username)
-// =============================
-async function getPublicProfile(req, res) {
-  try {
-    const { username } = req.params;
-    const data = await getUserByUsernameWithPosts(username);
-    if (!data) return res.status(404).json({ message: "User not found" });
-    res.json(data);
-  } catch (err) {
-    console.error("Get Public Profile Error:", err);
-    res.status(500).json({ message: "Server error" });
-  }
-}
 
 // =============================
 // 🧾 Register New User
@@ -54,7 +39,7 @@ async function registerUser(req, res) {
       token: generateToken(user.id),
     });
   } catch (err) {
-    console.error(err);
+    console.error("Register Error:", err);
     res.status(500).json({ message: "Server error" });
   }
 }
@@ -82,7 +67,7 @@ async function loginUser(req, res) {
       token: generateToken(user.id),
     });
   } catch (err) {
-    console.error(err);
+    console.error("Login Error:", err);
     res.status(500).json({ message: "Server error" });
   }
 }
@@ -116,13 +101,15 @@ async function oauthLogin(req, res) {
 }
 
 // =============================
-// 👤 Get Current Profile
+// 👤 Get Current Profile (with posts)
 // =============================
 async function getProfile(req, res) {
   try {
     const user = await getUserById(req.user.id);
     if (!user) return res.status(404).json({ message: "User not found" });
-    res.json(user);
+
+    const posts = await getPostsByUserId(user.id);
+    res.json({ user, posts });
   } catch (err) {
     console.error("Get Profile Error:", err);
     res.status(500).json({ message: "Server error" });
@@ -130,57 +117,60 @@ async function getProfile(req, res) {
 }
 
 // =============================
+// 📄 Public Profile by ID
+// =============================
+async function getPublicProfileById(req, res) {
+  try {
+    const id = parseInt(req.params.id, 10);
+    if (isNaN(id)) {
+      return res.status(400).json({ message: "Invalid user ID" });
+    }
+
+    const user = await getUserById(id);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    const posts = await getPostsByUserId(id);
+    res.json({ user, posts });
+  } catch (err) {
+    console.error("Get Public Profile by ID Error:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+}
+
+// =============================
 // ✏️ Update Profile
 // =============================
-// @desc Update profile (including avatar upload to Cloudinary)
 const updateProfile = async (req, res) => {
   try {
-    console.log("➡️ Reached updateProfile");
     const { username, bio } = req.body;
-    console.log("📦 req.body:", req.body);
-    console.log("📂 req.file:", req.file);
 
     let avatarUrl;
-
     if (req.file && req.file.buffer) {
-      console.log("📤 Starting Cloudinary upload...");
-      const streamUpload = (buffer) => {
-        return new Promise((resolve, reject) => {
+      const streamUpload = (buffer) =>
+        new Promise((resolve, reject) => {
           const stream = cloudinary.uploader.upload_stream(
-            {
-              folder: "avatars",
-              resource_type: "image",
-            },
+            { folder: "avatars", resource_type: "image" },
             (error, result) => {
-              if (error) {
-                console.error("❌ Cloudinary upload error:", error);
-                reject(error);
-              } else {
-                console.log("✅ Cloudinary upload result:", result);
-                resolve(result);
-              }
+              if (error) return reject(error);
+              resolve(result);
             }
           );
           stream.end(buffer);
         });
-      };
-
       const uploadResult = await streamUpload(req.file.buffer);
       avatarUrl = uploadResult.secure_url;
     }
 
-    // 👇 fallback undefined to null explicitly so COALESCE works
     const updatedUser = await updateUserProfile(req.user.id, {
       username: username || null,
       bio: bio || null,
-      avatar: avatarUrl || null, // 👈 FORCE avatar update
+      avatar: avatarUrl || null,
     });
 
-    console.log("✅ Updated user in DB:", updatedUser);
-    return res.json(updatedUser);
+    res.json(updatedUser);
   } catch (err) {
-    console.error("🔥 Update Profile Error:", err.message);
-    return res.status(500).json({ message: "Server error" });
+    console.error("Update Profile Error:", err);
+    res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -190,5 +180,5 @@ module.exports = {
   oauthLogin,
   getProfile,
   updateProfile,
-  getPublicProfile,
+  getPublicProfileById,
 };

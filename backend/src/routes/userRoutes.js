@@ -1,4 +1,3 @@
-// src/routes/userRoutes.js
 const express = require("express");
 const router = express.Router();
 const multer = require("multer");
@@ -15,7 +14,7 @@ const {
   oauthLogin,
   getProfile,
   updateProfile,
-  getPublicProfile,
+  getPublicProfileById, // ✅ new
 } = require("../controllers/userController");
 
 // 👥 Follow Controllers
@@ -36,16 +35,15 @@ router.post("/oauth", oauthLogin);
 // ==============================
 // 👤 Profile Routes
 // ==============================
-
-// ✅ Get own profile
+// Get own profile
 router.get("/profile", protect, getProfile);
 
-// ✅ Update profile (with optional avatar upload to Cloudinary)
+// Update profile (avatar or bio)
 router.put("/profile", protect, avatarUpload.single("avatar"), updateProfile);
+router.put("/profile/bio", protect, updateProfile);
 
-// ✅ Get public profile by username
-router.get("/profile/:username", getPublicProfile);
-router.put("/profile", protect, avatarUpload.single("avatar"), updateProfile);
+// Public profile by numeric ID
+router.get("/profile/:id", getPublicProfileById);
 
 // ==============================
 // 👥 Follow System Routes
@@ -55,9 +53,7 @@ router.delete("/:id/follow", protect, handleUnfollow);
 router.get("/:id/followers", getFollowersList);
 router.get("/:id/following", getFollowingList);
 
-// ==============================
 // 🔧 Test Route
-// ==============================
 router.get("/", (req, res) => {
   res.send("User route is working!");
 });
