@@ -1,4 +1,5 @@
 const bcrypt = require("bcryptjs");
+const cloudinary = require("../config/cloudinary");
 const {
   createUser,
   getUserByEmail,
@@ -6,14 +7,31 @@ const {
   updateUserProfile,
   findUserByEmail,
   createOAuthUser,
+  getUserByUsernameWithPosts,
 } = require("../models/userModel");
+
 const generateToken = require("../utils/generateToken");
 
-// @desc    Register new user
-// @route   POST /api/users/register
+// =============================
+// 📄 Public Profile (by username)
+// =============================
+async function getPublicProfile(req, res) {
+  try {
+    const { username } = req.params;
+    const data = await getUserByUsernameWithPosts(username);
+    if (!data) return res.status(404).json({ message: "User not found" });
+    res.json(data);
+  } catch (err) {
+    console.error("Get Public Profile Error:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+}
+
+// =============================
+// 🧾 Register New User
+// =============================
 async function registerUser(req, res) {
   const { username, email, password } = req.body;
-
   if (!username || !email || !password)
     return res.status(400).json({ message: "All fields are required" });
 
@@ -41,11 +59,11 @@ async function registerUser(req, res) {
   }
 }
 
-// @desc    Login user
-// @route   POST /api/users/login
+// =============================
+// 🔐 Login
+// =============================
 async function loginUser(req, res) {
   const { email, password } = req.body;
-
   if (!email || !password)
     return res.status(400).json({ message: "Email and password required" });
 
@@ -69,24 +87,18 @@ async function loginUser(req, res) {
   }
 }
 
-// @desc    OAuth Login / Signup
-// @route   POST /api/users/oauth
+// =============================
+// 🔑 OAuth Login or Register
+// =============================
 async function oauthLogin(req, res) {
   const { email, username, avatar, provider } = req.body;
-
   if (!email || !username || !provider)
     return res.status(400).json({ message: "Missing required fields" });
 
   try {
     let user = await findUserByEmail(email);
-
     if (!user) {
-      user = await createOAuthUser({
-        email,
-        username,
-        avatar,
-        provider,
-      });
+      user = await createOAuthUser({ email, username, avatar, provider });
     }
 
     res.status(200).json({
@@ -103,8 +115,9 @@ async function oauthLogin(req, res) {
   }
 }
 
-// @desc    Get user profile
-// @route   GET /api/users/profile
+// =============================
+// 👤 Get Current Profile
+// =============================
 async function getProfile(req, res) {
   try {
     const user = await getUserById(req.user.id);
@@ -116,22 +129,60 @@ async function getProfile(req, res) {
   }
 }
 
-// @desc    Update user profile
-// @route   PUT /api/users/profile
-async function updateProfile(req, res) {
+// =============================
+// ✏️ Update Profile
+// =============================
+// @desc Update profile (including avatar upload to Cloudinary)
+const updateProfile = async (req, res) => {
   try {
-    const { username, bio, avatar } = req.body;
+    console.log("➡️ Reached updateProfile");
+    const { username, bio } = req.body;
+    console.log("📦 req.body:", req.body);
+    console.log("📂 req.file:", req.file);
+
+    let avatarUrl;
+
+    if (req.file && req.file.buffer) {
+      console.log("📤 Starting Cloudinary upload...");
+      const streamUpload = (buffer) => {
+        return new Promise((resolve, reject) => {
+          const stream = cloudinary.uploader.upload_stream(
+            {
+              folder: "avatars",
+              resource_type: "image",
+            },
+            (error, result) => {
+              if (error) {
+                console.error("❌ Cloudinary upload error:", error);
+                reject(error);
+              } else {
+                console.log("✅ Cloudinary upload result:", result);
+                resolve(result);
+              }
+            }
+          );
+          stream.end(buffer);
+        });
+      };
+
+      const uploadResult = await streamUpload(req.file.buffer);
+      avatarUrl = uploadResult.secure_url;
+    }
+
+    // 👇 fallback undefined to null explicitly so COALESCE works
     const updatedUser = await updateUserProfile(req.user.id, {
-      username,
-      bio,
-      avatar,
+      username: username || null,
+      bio: bio || null,
+      avatar: avatarUrl || null, // 👈 FORCE avatar update
     });
-    res.json(updatedUser);
+
+    console.log("✅ Updated user in DB:", updatedUser);
+    return res.json(updatedUser);
   } catch (err) {
-    console.error("Update Profile Error:", err);
-    res.status(500).json({ message: "Server error" });
+    console.error("🔥 Update Profile Error:", err.message);
+    return res.status(500).json({ message: "Server error" });
   }
-}
+};
 
 module.exports = {
   registerUser,
@@ -139,4 +190,5 @@ module.exports = {
   oauthLogin,
   getProfile,
   updateProfile,
+  getPublicProfile,
 };
