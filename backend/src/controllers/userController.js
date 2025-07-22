@@ -1,5 +1,6 @@
 const bcrypt = require("bcryptjs");
 const cloudinary = require("../config/cloudinary");
+const db = require("../config/db");
 const {
   createUser,
   getUserByEmail,
@@ -174,6 +175,23 @@ const updateProfile = async (req, res) => {
   }
 };
 
+// =============================
+// 🗒️ Get All Users (for messaging list)
+// =============================
+async function getAllUsers(req, res) {
+  try {
+    const result = await db.query(
+      `SELECT id, username, avatar
+       FROM users
+       ORDER BY username`
+    );
+    res.json({ users: result.rows });
+  } catch (err) {
+    console.error("Get All Users Error:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+}
+
 module.exports = {
   registerUser,
   loginUser,
@@ -181,4 +199,5 @@ module.exports = {
   getProfile,
   updateProfile,
   getPublicProfileById,
+  getAllUsers,
 };
