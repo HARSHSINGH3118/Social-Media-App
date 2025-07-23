@@ -12,7 +12,7 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$axios$2f$lib
 // Only read window.location.hostname when in the browser
 const getHost = ()=>("TURBOPACK compile-time falsy", 0) ? "TURBOPACK unreachable" : "localhost";
 const api = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$axios$2f$lib$2f$axios$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"].create({
-    baseURL: `http://${getHost()}:5000/api`,
+    baseURL: `http://${getHost()}:5000`,
     withCredentials: true
 });
 // Only attach the interceptor in the browser
@@ -71,16 +71,14 @@ function ChatPage() {
     const [incomingCall, setIncomingCall] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(null);
     const [inCall, setInCall] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(false);
     const [calling, setCalling] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(false);
-    // Refs
     const fileInputRef = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useRef"])();
     const endRef = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useRef"])();
     const typingTimer = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useRef"])();
     const localVideoRef = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useRef"])();
     const remoteVideoRef = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useRef"])();
     const pcRef = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useRef"])(null);
-    // Buffer for ICE candidates arriving before PC is ready
     const pendingCandidates = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useRef"])([]);
-    // Redirect if unauthenticated
+    // Redirect if not logged in
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
         if (!loading && !user) router.push("/login");
     }, [
@@ -90,15 +88,15 @@ function ChatPage() {
     ]);
     // Fetch partner info
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
-        __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$services$2f$api$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"].get(`/users/profile/${userId}`).then(({ data })=>setPartner(data.user)).catch(console.error);
+        __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$services$2f$api$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"].get(`/api/users/profile/${userId}`).then(({ data })=>setPartner(data.user)).catch(console.error);
     }, [
         userId
     ]);
-    // Chat + signaling event listeners
+    // Chat and signaling listeners
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
         if (!socket || !user) return;
         socket.emit("join", user.id);
-        __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$services$2f$api$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"].get(`/messages/${userId}`).then(({ data })=>setMessages(data)).catch(console.error);
+        __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$services$2f$api$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"].get(`/api/messages/${userId}`).then(({ data })=>setMessages(data)).catch(console.error);
         socket.on("receive_message", (m)=>setMessages((ms)=>[
                     ...ms,
                     m
@@ -107,12 +105,8 @@ function ChatPage() {
                     ...ms,
                     m
                 ]));
-        socket.on("typing", ({ from })=>{
-            if (from === userId) setIsTyping(true);
-        });
-        socket.on("stop_typing", ({ from })=>{
-            if (from === userId) setIsTyping(false);
-        });
+        socket.on("typing", ({ from })=>from === userId && setIsTyping(true));
+        socket.on("stop_typing", ({ from })=>from === userId && setIsTyping(false));
         // Video call signaling
         socket.on("incoming_call", ({ from, offer })=>setIncomingCall({
                 from,
@@ -157,9 +151,7 @@ function ChatPage() {
     }, [
         messages
     ]);
-    //
-    // ─── CHAT HANDLERS ────────────────────────────────────────────────────────────
-    //
+    // ── Chat Handlers ────────────────────────────────────────────────────────────
     const sendChat = ()=>{
         if (!socket || !input.trim()) return;
         socket.emit("send_message", {
@@ -194,31 +186,50 @@ function ChatPage() {
         reader.onload = ()=>setInput(reader.result);
         reader.readAsDataURL(file);
     };
-    //
-    // ─── VIDEO CALL HANDLERS ──────────────────────────────────────────────────────
-    //
-    const startCall = ()=>{
-        setCalling(true);
-    };
-    // Perform WebRTC setup after video elements mount
+    // ── Video Call Handlers ──────────────────────────────────────────────────────
+    const startCall = ()=>setCalling(true);
+    // Setup WebRTC once `calling` is true
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
         if (!calling || !socket) return;
         (async ()=>{
-            const stream = await navigator.mediaDevices.getUserMedia({
-                video: true,
-                audio: true
-            });
+            let stream;
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({
+                    video: true,
+                    audio: true
+                });
+            } catch (err) {
+                console.warn("getUserMedia(video+audio) failed:", err);
+                if (err.name === "NotFoundError") {
+                    try {
+                        stream = await navigator.mediaDevices.getUserMedia({
+                            video: false,
+                            audio: true
+                        });
+                        alert("No camera found — starting audio-only call.");
+                    } catch (err2) {
+                        console.error("getUserMedia(audio) also failed:", err2);
+                        alert("No camera or microphone available.");
+                        setCalling(false);
+                        return;
+                    }
+                } else {
+                    console.error("getUserMedia error:", err);
+                    setCalling(false);
+                    return;
+                }
+            }
             localVideoRef.current.srcObject = stream;
             const pc = new RTCPeerConnection(STUN_CONFIG);
             pcRef.current = pc;
-            // Drain any buffered ICE candidates
-            pendingCandidates.current.forEach(async (cand)=>{
+            // Drain buffered ICE candidates
+            for (let cand of pendingCandidates.current){
                 try {
                     await pc.addIceCandidate(cand);
                 } catch (e) {
                     console.error("Error adding buffered ICE candidate:", e);
                 }
-            });
+            }
             pendingCandidates.current = [];
             stream.getTracks().forEach((t)=>pc.addTrack(t, stream));
             pc.ontrack = (e)=>{
@@ -248,22 +259,44 @@ function ChatPage() {
         if (!socket || !incomingCall) return;
         setIncomingCall(null);
         setInCall(true);
-        const { from, offer } = incomingCall;
-        const stream = await navigator.mediaDevices.getUserMedia({
-            video: true,
-            audio: true
-        });
+        let stream;
+        try {
+            stream = await navigator.mediaDevices.getUserMedia({
+                video: true,
+                audio: true
+            });
+        } catch (err) {
+            console.warn("getUserMedia(video+audio) failed:", err);
+            if (err.name === "NotFoundError") {
+                try {
+                    stream = await navigator.mediaDevices.getUserMedia({
+                        video: false,
+                        audio: true
+                    });
+                    alert("No camera found — accepting audio-only call.");
+                } catch (err2) {
+                    console.error("getUserMedia(audio) also failed:", err2);
+                    alert("No camera or microphone available.");
+                    setInCall(false);
+                    return;
+                }
+            } else {
+                console.error("getUserMedia error:", err);
+                setInCall(false);
+                return;
+            }
+        }
         localVideoRef.current.srcObject = stream;
+        const { from, offer } = incomingCall;
         const pc = new RTCPeerConnection(STUN_CONFIG);
         pcRef.current = pc;
-        // Drain buffered ICE candidates
-        pendingCandidates.current.forEach(async (cand)=>{
+        for (let cand of pendingCandidates.current){
             try {
                 await pc.addIceCandidate(cand);
             } catch (e) {
                 console.error("Error adding buffered ICE candidate:", e);
             }
-        });
+        }
         pendingCandidates.current = [];
         stream.getTracks().forEach((t)=>pc.addTrack(t, stream));
         pc.ontrack = (e)=>{
@@ -313,15 +346,16 @@ function ChatPage() {
                                     children: "←"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/messages/[userId]/page.jsx",
-                                    lineNumber: 247,
+                                    lineNumber: 284,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("img", {
                                     src: partner.avatar,
+                                    alt: partner.username,
                                     className: "w-10 h-10 rounded-full"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/messages/[userId]/page.jsx",
-                                    lineNumber: 250,
+                                    lineNumber: 287,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
@@ -329,13 +363,13 @@ function ChatPage() {
                                     children: partner.username
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/messages/[userId]/page.jsx",
-                                    lineNumber: 251,
+                                    lineNumber: 292,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/messages/[userId]/page.jsx",
-                            lineNumber: 246,
+                            lineNumber: 283,
                             columnNumber: 11
                         }, this),
                         !inCall && !incomingCall && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -344,7 +378,7 @@ function ChatPage() {
                             children: "📹 Call"
                         }, void 0, false, {
                             fileName: "[project]/src/app/messages/[userId]/page.jsx",
-                            lineNumber: 254,
+                            lineNumber: 295,
                             columnNumber: 13
                         }, this),
                         inCall && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -353,13 +387,13 @@ function ChatPage() {
                             children: "✖️ End"
                         }, void 0, false, {
                             fileName: "[project]/src/app/messages/[userId]/page.jsx",
-                            lineNumber: 262,
+                            lineNumber: 303,
                             columnNumber: 13
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/app/messages/[userId]/page.jsx",
-                    lineNumber: 245,
+                    lineNumber: 282,
                     columnNumber: 9
                 }, this),
                 (calling || inCall) && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -371,7 +405,7 @@ function ChatPage() {
                             className: "w-full h-full object-cover"
                         }, void 0, false, {
                             fileName: "[project]/src/app/messages/[userId]/page.jsx",
-                            lineNumber: 271,
+                            lineNumber: 312,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("video", {
@@ -381,13 +415,13 @@ function ChatPage() {
                             className: "absolute bottom-4 right-4 w-32 h-24 object-cover rounded-lg border-2 border-white"
                         }, void 0, false, {
                             fileName: "[project]/src/app/messages/[userId]/page.jsx",
-                            lineNumber: 276,
+                            lineNumber: 317,
                             columnNumber: 13
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/app/messages/[userId]/page.jsx",
-                    lineNumber: 270,
+                    lineNumber: 311,
                     columnNumber: 11
                 }, this),
                 incomingCall && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -403,7 +437,7 @@ function ChatPage() {
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/messages/[userId]/page.jsx",
-                                lineNumber: 289,
+                                lineNumber: 330,
                                 columnNumber: 15
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -412,18 +446,18 @@ function ChatPage() {
                                 children: "Accept"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/messages/[userId]/page.jsx",
-                                lineNumber: 290,
+                                lineNumber: 331,
                                 columnNumber: 15
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/messages/[userId]/page.jsx",
-                        lineNumber: 288,
+                        lineNumber: 329,
                         columnNumber: 13
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/src/app/messages/[userId]/page.jsx",
-                    lineNumber: 287,
+                    lineNumber: 328,
                     columnNumber: 11
                 }, this),
                 !calling && !inCall && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Fragment"], {
@@ -438,31 +472,33 @@ function ChatPage() {
                                         children: [
                                             !mine && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("img", {
                                                 src: partner.avatar,
+                                                alt: "",
                                                 className: "w-8 h-8 rounded-full mr-2"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/messages/[userId]/page.jsx",
-                                                lineNumber: 312,
+                                                lineNumber: 353,
                                                 columnNumber: 23
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                 className: `px-4 py-2 rounded-lg max-w-[70%] ${mine ? "bg-blue-500 text-white rounded-br-none" : "bg-gray-700 text-white rounded-bl-none"}`,
                                                 children: msg.content.startsWith("data:image") ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("img", {
                                                     src: msg.content,
+                                                    alt: "sent",
                                                     className: "rounded max-w-full"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/messages/[userId]/page.jsx",
-                                                    lineNumber: 325,
+                                                    lineNumber: 367,
                                                     columnNumber: 25
                                                 }, this) : msg.content
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/messages/[userId]/page.jsx",
-                                                lineNumber: 317,
+                                                lineNumber: 359,
                                                 columnNumber: 21
                                             }, this)
                                         ]
                                     }, i, true, {
                                         fileName: "[project]/src/app/messages/[userId]/page.jsx",
-                                        lineNumber: 307,
+                                        lineNumber: 348,
                                         columnNumber: 19
                                     }, this);
                                 }),
@@ -470,13 +506,13 @@ function ChatPage() {
                                     ref: endRef
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/messages/[userId]/page.jsx",
-                                    lineNumber: 333,
+                                    lineNumber: 379,
                                     columnNumber: 15
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/messages/[userId]/page.jsx",
-                            lineNumber: 303,
+                            lineNumber: 344,
                             columnNumber: 13
                         }, this),
                         isTyping && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -486,12 +522,12 @@ function ChatPage() {
                                 children: "Typing…"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/messages/[userId]/page.jsx",
-                                lineNumber: 338,
+                                lineNumber: 384,
                                 columnNumber: 17
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/app/messages/[userId]/page.jsx",
-                            lineNumber: 337,
+                            lineNumber: 383,
                             columnNumber: 15
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -503,7 +539,7 @@ function ChatPage() {
                                     children: "😀"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/messages/[userId]/page.jsx",
-                                    lineNumber: 343,
+                                    lineNumber: 389,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -512,7 +548,7 @@ function ChatPage() {
                                     children: "📷"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/messages/[userId]/page.jsx",
-                                    lineNumber: 349,
+                                    lineNumber: 395,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -523,7 +559,7 @@ function ChatPage() {
                                     className: "hidden"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/messages/[userId]/page.jsx",
-                                    lineNumber: 352,
+                                    lineNumber: 398,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -535,7 +571,7 @@ function ChatPage() {
                                     className: "flex-1 bg-gray-700 px-4 py-2 rounded-full focus:outline-none"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/messages/[userId]/page.jsx",
-                                    lineNumber: 360,
+                                    lineNumber: 406,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -544,13 +580,13 @@ function ChatPage() {
                                     children: "Send"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/messages/[userId]/page.jsx",
-                                    lineNumber: 369,
+                                    lineNumber: 415,
                                     columnNumber: 15
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/messages/[userId]/page.jsx",
-                            lineNumber: 342,
+                            lineNumber: 388,
                             columnNumber: 13
                         }, this),
                         showEmojiPicker && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -561,12 +597,12 @@ function ChatPage() {
                                     children: e
                                 }, e, false, {
                                     fileName: "[project]/src/app/messages/[userId]/page.jsx",
-                                    lineNumber: 380,
+                                    lineNumber: 426,
                                     columnNumber: 19
                                 }, this))
                         }, void 0, false, {
                             fileName: "[project]/src/app/messages/[userId]/page.jsx",
-                            lineNumber: 378,
+                            lineNumber: 424,
                             columnNumber: 15
                         }, this)
                     ]
@@ -574,12 +610,12 @@ function ChatPage() {
             ]
         }, void 0, true, {
             fileName: "[project]/src/app/messages/[userId]/page.jsx",
-            lineNumber: 243,
+            lineNumber: 280,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "[project]/src/app/messages/[userId]/page.jsx",
-        lineNumber: 242,
+        lineNumber: 279,
         columnNumber: 5
     }, this);
 }

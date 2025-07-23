@@ -6,7 +6,7 @@ const getHost = () =>
   typeof window !== "undefined" ? window.location.hostname : "localhost";
 
 const api = axios.create({
-  baseURL: `http://${getHost()}:5000/api`,
+  baseURL: `http://${getHost()}:5000`,
   withCredentials: true,
 });
 

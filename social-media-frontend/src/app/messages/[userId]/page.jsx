@@ -29,18 +29,15 @@ export default function ChatPage() {
   const [inCall, setInCall] = useState(false);
   const [calling, setCalling] = useState(false);
 
-  // Refs
   const fileInputRef = useRef();
   const endRef = useRef();
   const typingTimer = useRef();
   const localVideoRef = useRef();
   const remoteVideoRef = useRef();
   const pcRef = useRef(null);
-
-  // Buffer for ICE candidates arriving before PC is ready
   const pendingCandidates = useRef([]);
 
-  // Redirect if unauthenticated
+  // Redirect if not logged in
   useEffect(() => {
     if (!loading && !user) router.push("/login");
   }, [loading, user, router]);
@@ -48,29 +45,28 @@ export default function ChatPage() {
   // Fetch partner info
   useEffect(() => {
     api
-      .get(`/users/profile/${userId}`)
+      .get(`/api/users/profile/${userId}`)
       .then(({ data }) => setPartner(data.user))
       .catch(console.error);
   }, [userId]);
 
-  // Chat + signaling event listeners
+  // Chat and signaling listeners
   useEffect(() => {
     if (!socket || !user) return;
     socket.emit("join", user.id);
 
     api
-      .get(`/messages/${userId}`)
+      .get(`/api/messages/${userId}`)
       .then(({ data }) => setMessages(data))
       .catch(console.error);
 
     socket.on("receive_message", (m) => setMessages((ms) => [...ms, m]));
     socket.on("message_sent", (m) => setMessages((ms) => [...ms, m]));
-    socket.on("typing", ({ from }) => {
-      if (from === userId) setIsTyping(true);
-    });
-    socket.on("stop_typing", ({ from }) => {
-      if (from === userId) setIsTyping(false);
-    });
+    socket.on("typing", ({ from }) => from === userId && setIsTyping(true));
+    socket.on(
+      "stop_typing",
+      ({ from }) => from === userId && setIsTyping(false)
+    );
 
     // Video call signaling
     socket.on("incoming_call", ({ from, offer }) =>
@@ -110,12 +106,13 @@ export default function ChatPage() {
     endRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  //
-  // ─── CHAT HANDLERS ────────────────────────────────────────────────────────────
-  //
+  // ── Chat Handlers ────────────────────────────────────────────────────────────
   const sendChat = () => {
     if (!socket || !input.trim()) return;
-    socket.emit("send_message", { receiver_id: userId, content: input });
+    socket.emit("send_message", {
+      receiver_id: userId,
+      content: input,
+    });
     setInput("");
     setShowEmojiPicker(false);
     socket.emit("stop_typing", { to: userId });
@@ -139,35 +136,53 @@ export default function ChatPage() {
     reader.readAsDataURL(file);
   };
 
-  //
-  // ─── VIDEO CALL HANDLERS ──────────────────────────────────────────────────────
-  //
-  const startCall = () => {
-    setCalling(true);
-  };
+  // ── Video Call Handlers ──────────────────────────────────────────────────────
+  const startCall = () => setCalling(true);
 
-  // Perform WebRTC setup after video elements mount
+  // Setup WebRTC once `calling` is true
   useEffect(() => {
     if (!calling || !socket) return;
-
     (async () => {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: true,
-        audio: true,
-      });
+      let stream;
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: true,
+          audio: true,
+        });
+      } catch (err) {
+        console.warn("getUserMedia(video+audio) failed:", err);
+        if (err.name === "NotFoundError") {
+          try {
+            stream = await navigator.mediaDevices.getUserMedia({
+              video: false,
+              audio: true,
+            });
+            alert("No camera found — starting audio-only call.");
+          } catch (err2) {
+            console.error("getUserMedia(audio) also failed:", err2);
+            alert("No camera or microphone available.");
+            setCalling(false);
+            return;
+          }
+        } else {
+          console.error("getUserMedia error:", err);
+          setCalling(false);
+          return;
+        }
+      }
       localVideoRef.current.srcObject = stream;
 
       const pc = new RTCPeerConnection(STUN_CONFIG);
       pcRef.current = pc;
 
-      // Drain any buffered ICE candidates
-      pendingCandidates.current.forEach(async (cand) => {
+      // Drain buffered ICE candidates
+      for (let cand of pendingCandidates.current) {
         try {
           await pc.addIceCandidate(cand);
         } catch (e) {
           console.error("Error adding buffered ICE candidate:", e);
         }
-      });
+      }
       pendingCandidates.current = [];
 
       stream.getTracks().forEach((t) => pc.addTrack(t, stream));
@@ -191,24 +206,46 @@ export default function ChatPage() {
     setIncomingCall(null);
     setInCall(true);
 
-    const { from, offer } = incomingCall;
-    const stream = await navigator.mediaDevices.getUserMedia({
-      video: true,
-      audio: true,
-    });
+    let stream;
+    try {
+      stream = await navigator.mediaDevices.getUserMedia({
+        video: true,
+        audio: true,
+      });
+    } catch (err) {
+      console.warn("getUserMedia(video+audio) failed:", err);
+      if (err.name === "NotFoundError") {
+        try {
+          stream = await navigator.mediaDevices.getUserMedia({
+            video: false,
+            audio: true,
+          });
+          alert("No camera found — accepting audio-only call.");
+        } catch (err2) {
+          console.error("getUserMedia(audio) also failed:", err2);
+          alert("No camera or microphone available.");
+          setInCall(false);
+          return;
+        }
+      } else {
+        console.error("getUserMedia error:", err);
+        setInCall(false);
+        return;
+      }
+    }
     localVideoRef.current.srcObject = stream;
 
+    const { from, offer } = incomingCall;
     const pc = new RTCPeerConnection(STUN_CONFIG);
     pcRef.current = pc;
 
-    // Drain buffered ICE candidates
-    pendingCandidates.current.forEach(async (cand) => {
+    for (let cand of pendingCandidates.current) {
       try {
         await pc.addIceCandidate(cand);
       } catch (e) {
         console.error("Error adding buffered ICE candidate:", e);
       }
-    });
+    }
     pendingCandidates.current = [];
 
     stream.getTracks().forEach((t) => pc.addTrack(t, stream));
@@ -247,7 +284,11 @@ export default function ChatPage() {
             <button onClick={() => router.back()} className="text-2xl">
               ←
             </button>
-            <img src={partner.avatar} className="w-10 h-10 rounded-full" />
+            <img
+              src={partner.avatar}
+              alt={partner.username}
+              className="w-10 h-10 rounded-full"
+            />
             <h2 className="text-xl font-semibold">{partner.username}</h2>
           </div>
           {!inCall && !incomingCall && (
@@ -311,6 +352,7 @@ export default function ChatPage() {
                     {!mine && (
                       <img
                         src={partner.avatar}
+                        alt=""
                         className="w-8 h-8 rounded-full mr-2"
                       />
                     )}
@@ -322,7 +364,11 @@ export default function ChatPage() {
                       }`}
                     >
                       {msg.content.startsWith("data:image") ? (
-                        <img src={msg.content} className="rounded max-w-full" />
+                        <img
+                          src={msg.content}
+                          alt="sent"
+                          className="rounded max-w-full"
+                        />
                       ) : (
                         msg.content
                       )}
