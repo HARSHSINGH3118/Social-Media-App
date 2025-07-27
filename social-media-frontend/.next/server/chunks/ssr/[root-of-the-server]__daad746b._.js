@@ -286,6 +286,7 @@ module.exports = mod;
 "[project]/src/contexts/SocketContext.jsx [app-ssr] (ecmascript)": ((__turbopack_context__) => {
 "use strict";
 
+// src/contexts/SocketContext.jsx
 __turbopack_context__.s({
     "SocketProvider": ()=>SocketProvider,
     "useSocket": ()=>useSocket
@@ -306,26 +307,26 @@ function SocketProvider({ children }) {
     const [socket, setSocket] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(null);
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
         if (!user) return;
-        // remove the transports override so polling can happen first,
-        // which lets the WebSocket handshake succeed
         const s = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$socket$2e$io$2d$client$2f$build$2f$esm$2d$debug$2f$index$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$locals$3e$__["io"])("http://localhost:5000", {
             path: "/socket.io",
-            cors: {
-                origin: "http://localhost:3000",
-                credentials: true
-            }
+            withCredentials: true
         });
         setSocket(s);
         s.on("connect", ()=>{
-            console.log("Socket connected:", s.id);
+            console.log("🟢 Socket connected:", s.id);
             s.emit("join", user.id);
         });
-        s.on("connect_error", (err)=>{
-            console.error("Socket connect_error:", err);
+        s.on("incoming_call", ({ from, offer })=>{
+            console.log("📞 Incoming call from:", from);
+            alert(`\uD83D\uDCDE Incoming call from ${from}`);
+        });
+        s.on("receive_message", (msg)=>{
+            console.log("📥 New message:", msg);
+        });
+        s.on("notification", (notif)=>{
+            console.log("🔔 Notification:", notif);
         });
         return ()=>{
-            s.off("connect");
-            s.off("connect_error");
             s.disconnect();
         };
     }, [
@@ -336,7 +337,7 @@ function SocketProvider({ children }) {
         children: children
     }, void 0, false, {
         fileName: "[project]/src/contexts/SocketContext.jsx",
-        lineNumber: 45,
+        lineNumber: 48,
         columnNumber: 5
     }, this);
 }

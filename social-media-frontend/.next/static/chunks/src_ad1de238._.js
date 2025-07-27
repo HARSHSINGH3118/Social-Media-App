@@ -145,6 +145,7 @@ if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelper
 
 var { k: __turbopack_refresh__, m: module } = __turbopack_context__;
 {
+// src/contexts/SocketContext.jsx
 __turbopack_context__.s({
     "SocketProvider": ()=>SocketProvider,
     "useSocket": ()=>useSocket
@@ -169,31 +170,36 @@ function SocketProvider(param) {
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
         "SocketProvider.useEffect": ()=>{
             if (!user) return;
-            // remove the transports override so polling can happen first,
-            // which lets the WebSocket handshake succeed
             const s = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$socket$2e$io$2d$client$2f$build$2f$esm$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$locals$3e$__["io"])("http://localhost:5000", {
                 path: "/socket.io",
-                cors: {
-                    origin: "http://localhost:3000",
-                    credentials: true
-                }
+                withCredentials: true
             });
             setSocket(s);
             s.on("connect", {
                 "SocketProvider.useEffect": ()=>{
-                    console.log("Socket connected:", s.id);
+                    console.log("🟢 Socket connected:", s.id);
                     s.emit("join", user.id);
                 }
             }["SocketProvider.useEffect"]);
-            s.on("connect_error", {
-                "SocketProvider.useEffect": (err)=>{
-                    console.error("Socket connect_error:", err);
+            s.on("incoming_call", {
+                "SocketProvider.useEffect": (param)=>{
+                    let { from, offer } = param;
+                    console.log("📞 Incoming call from:", from);
+                    alert("\uD83D\uDCDE Incoming call from ".concat(from));
+                }
+            }["SocketProvider.useEffect"]);
+            s.on("receive_message", {
+                "SocketProvider.useEffect": (msg)=>{
+                    console.log("📥 New message:", msg);
+                }
+            }["SocketProvider.useEffect"]);
+            s.on("notification", {
+                "SocketProvider.useEffect": (notif)=>{
+                    console.log("🔔 Notification:", notif);
                 }
             }["SocketProvider.useEffect"]);
             return ({
                 "SocketProvider.useEffect": ()=>{
-                    s.off("connect");
-                    s.off("connect_error");
                     s.disconnect();
                 }
             })["SocketProvider.useEffect"];
@@ -206,7 +212,7 @@ function SocketProvider(param) {
         children: children
     }, void 0, false, {
         fileName: "[project]/src/contexts/SocketContext.jsx",
-        lineNumber: 45,
+        lineNumber: 48,
         columnNumber: 5
     }, this);
 }
