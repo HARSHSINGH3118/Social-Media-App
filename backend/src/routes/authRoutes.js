@@ -2,15 +2,19 @@ const express = require("express");
 const passport = require("passport");
 const jwt = require("jsonwebtoken");
 
+const {
+  forgotPassword,
+  resetPassword,
+} = require("../controllers/userController"); // ✅ FIXED path here
+
 const router = express.Router();
 
-// GET /auth/google
+// 🌐 Google OAuth Login
 router.get(
   "/google",
   passport.authenticate("google", { scope: ["profile", "email"] })
 );
 
-// GET /auth/google/callback
 router.get(
   "/google/callback",
   passport.authenticate("google", { session: false }),
@@ -19,9 +23,15 @@ router.get(
       expiresIn: "7d",
     });
 
-    // Redirect to frontend with token in query
+    // Redirect to frontend with token in query param
     res.redirect(`http://localhost:3000/auth/callback?token=${token}`);
   }
 );
+
+// 🔐 Forgot Password – Send Reset Link
+router.post("/forgot-password", forgotPassword);
+
+// 🔐 Reset Password – Submit New Password
+router.post("/reset-password", resetPassword);
 
 module.exports = router;

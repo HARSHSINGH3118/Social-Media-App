@@ -53,8 +53,31 @@ async function getPostsByUserId(userId) {
   return result.rows;
 }
 
+// ✅ Get a single post by ID
+async function getPostById(postId) {
+  const result = await db.query("SELECT * FROM posts WHERE id = $1", [postId]);
+  return result.rows[0];
+}
+
+// ✅ Update post content (for editing caption)
+async function updatePostContent(postId, content) {
+  const result = await db.query(
+    "UPDATE posts SET content = $1 WHERE id = $2 RETURNING *",
+    [content, postId]
+  );
+  return result.rows[0];
+}
+
+// ✅ Delete all tags associated with a post (before re-adding updated ones)
+async function deleteTagsForPost(postId) {
+  await db.query("DELETE FROM post_tags WHERE post_id = $1", [postId]);
+}
+
 module.exports = {
   createPost,
   getAllPosts,
-  getPostsByUserId, // ✅ Exported
+  getPostsByUserId,
+  getPostById,
+  updatePostContent,
+  deleteTagsForPost,
 };

@@ -12,6 +12,71 @@ const {
 } = require("../models/userModel");
 const { getPostsByUserId } = require("../models/postModel");
 const generateToken = require("../utils/generateToken");
+// In userController.js
+
+const crypto = require("crypto");
+const sendEmail = require("../utils/sendEmail");
+
+// =============================
+// 🔐 Forgot Password (send reset email)
+// =============================
+async function forgotPassword(req, res) {
+  const { email } = req.body;
+  if (!email) return res.status(400).json({ message: "Email is required" });
+
+  try {
+    const user = await getUserByEmail(email);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    const token = crypto.randomBytes(32).toString("hex");
+    const expires = new Date(Date.now() + 15 * 60 * 1000); // 15 mins
+
+    await db.query(
+      "UPDATE users SET reset_token = $1, reset_token_expires = $2 WHERE id = $3",
+      [token, expires, user.id]
+    );
+
+    const resetLink = `http://localhost:3000/reset-password/${token}`;
+    await sendEmail(email, "Password Reset", `Reset link: ${resetLink}`);
+
+    res.json({ message: "Reset link sent to email" });
+  } catch (err) {
+    console.error("Forgot Password Error:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+}
+
+// =============================
+// 🔐 Reset Password
+// =============================
+async function resetPassword(req, res) {
+  const { token, password } = req.body;
+  if (!token || !password)
+    return res.status(400).json({ message: "Token and new password required" });
+
+  try {
+    const user = await db.query(
+      "SELECT * FROM users WHERE reset_token = $1 AND reset_token_expires > NOW()",
+      [token]
+    );
+
+    if (!user.rows.length) {
+      return res.status(400).json({ message: "Invalid or expired token" });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    await db.query(
+      `UPDATE users SET password = $1, reset_token = NULL, reset_token_expires = NULL WHERE id = $2`,
+      [hashedPassword, user.rows[0].id]
+    );
+
+    res.json({ message: "Password reset successful" });
+  } catch (err) {
+    console.error("Reset Password Error:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+}
 
 // =============================
 // 🧾 Register New User
@@ -200,4 +265,6 @@ module.exports = {
   updateProfile,
   getPublicProfileById,
   getAllUsers,
+  forgotPassword,
+  resetPassword,
 };

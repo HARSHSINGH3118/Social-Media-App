@@ -8,6 +8,7 @@ const upload = require("../middleware/uploadMiddleware");
 const {
   handleCreatePost,
   handleGetAllPosts,
+  handleUpdatePost, // ✅ Edit Post
 } = require("../controllers/postController");
 
 const {
@@ -21,21 +22,16 @@ const {
 } = require("../controllers/likeController");
 
 // 📝 Post Routes
-
-// Create a new post (with optional image)
-router.post("/", protect, upload.single("image"), handleCreatePost);
-
-// Get all posts (optionally includes likedByUser if token present)
-router.get("/", optionalAuth, handleGetAllPosts);
+router.post("/", protect, upload.single("image"), handleCreatePost); // Create new post
+router.get("/", optionalAuth, handleGetAllPosts); // Get all posts
+router.put("/:id", protect, handleUpdatePost); // ✅ Update post
 
 // 💬 Comment Routes
-router.post("/:postId/comments", protect, createComment);
-router.get("/:postId/comments", getComments);
+router.post("/:postId/comments", protect, createComment); // Add comment
+router.get("/:postId/comments", getComments); // Get comments
 
-// ❤️ Like or Unlike a post
-router.post("/:postId/like", protect, handleToggleLike);
-
-// 🔢 Get total like count for a post
-router.get("/:postId/likes", handleLikeCount);
+// ❤️ Like Routes
+router.post("/:postId/like", protect, handleToggleLike); // Toggle like
+router.get("/:postId/likes", handleLikeCount); // Get like count
 
 module.exports = router;

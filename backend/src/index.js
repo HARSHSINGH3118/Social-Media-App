@@ -53,6 +53,7 @@ app.use("/api/tags", tagRoutes);
 app.use("/api/messages", messageRoutes);
 app.use("/api/notifications", notificationRoutes);
 app.use("/auth", authRoutes);
+app.use("/api/auth", authRoutes);
 
 // ✅ WebSocket Setup
 initSocket(server);
