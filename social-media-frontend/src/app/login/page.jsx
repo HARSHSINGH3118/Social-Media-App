@@ -16,8 +16,6 @@ export default function LoginPage() {
     e.preventDefault();
     try {
       const res = await API.post("/users/login", { email, password });
-
-      // ✅ Save token and fetch user profile
       await login(res.data.token);
     } catch (err) {
       console.error("❌ Login error:", err?.response?.data || err.message);
@@ -26,7 +24,7 @@ export default function LoginPage() {
   };
 
   const handleGoogleLogin = () => {
-    window.location.href = "http://localhost:5000/auth/google"; // ✅ Backend Google OAuth entry point
+    window.location.href = "http://localhost:5000/auth/google";
   };
 
   return (
@@ -39,7 +37,9 @@ export default function LoginPage() {
           Welcome Back
         </h2>
         <p className="text-center text-gray-600 mb-6">Login to your account</p>
-        {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
+        {error && (
+          <p className="text-red-500 text-sm mb-4 text-center">{error}</p>
+        )}
 
         <form onSubmit={handleLogin} className="space-y-4">
           <input
@@ -50,14 +50,23 @@ export default function LoginPage() {
             onChange={(e) => setEmail(e.target.value)}
             required
           />
-          <input
-            type="password"
-            placeholder="Password"
-            className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 placeholder-gray-500 text-black"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
+          <div className="space-y-1">
+            <input
+              type="password"
+              placeholder="Password"
+              className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 placeholder-gray-500 text-black"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+            <p
+              onClick={() => router.push("/forgot-password")}
+              className="text-sm text-blue-600 text-right cursor-pointer hover:underline"
+            >
+              Forgot password?
+            </p>
+          </div>
+
           <button
             type="submit"
             className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition"
