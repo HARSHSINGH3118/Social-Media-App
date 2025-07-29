@@ -1,6 +1,9 @@
+// backend/src/socket.js
+
 const { Server } = require("socket.io");
 const { sendMessage } = require("./models/messageModel");
-const { getUserById } = require("./models/userModel"); // ✅ Needed for sender avatar/name
+const { getUserById } = require("./models/userModel");
+const { createNotification } = require("./models/notificationModel");
 
 let io;
 const onlineUsers = new Map();
@@ -16,7 +19,7 @@ const initSocket = (server) => {
   io.on("connection", (socket) => {
     console.log("📡 User connected:", socket.id);
 
-    // ─── JOIN ROOM ───────────────────────────────────────────
+    // ─── JOIN ROOM ───────────────────────────────
     socket.on("join", (userId) => {
       if (!userId) return;
       const cleanedId = String(userId).trim();
@@ -27,7 +30,7 @@ const initSocket = (server) => {
       io.emit("user_online", Array.from(onlineUsers.keys()));
     });
 
-    // ─── DISCONNECT ───────────────────────────────────────────
+    // ─── DISCONNECT ─────────────────────────────
     socket.on("disconnect", () => {
       if (socket.userId) {
         onlineUsers.delete(socket.userId);
@@ -38,7 +41,7 @@ const initSocket = (server) => {
       }
     });
 
-    // ─── TYPING INDICATOR ─────────────────────────────────────
+    // ─── TYPING INDICATOR ────────────────────────
     socket.on("typing", ({ to }) => {
       if (to) io.to(to).emit("typing", { from: socket.userId });
     });
@@ -47,39 +50,45 @@ const initSocket = (server) => {
       if (to) io.to(to).emit("stop_typing", { from: socket.userId });
     });
 
-    // ─── MESSAGING + NOTIFICATION ─────────────────────────────
+    // ─── MESSAGING ───────────────────────────────
     socket.on("send_message", async (data) => {
       try {
         if (typeof data === "string") data = JSON.parse(data);
 
         const sender_id = socket.userId?.trim();
         const receiver_id = data.receiver_id;
-        const content = data.content;
+        const content = typeof data.content === "string" ? data.content : "";
 
-        if (!sender_id || !receiver_id || !content) return;
+        if (!sender_id || !receiver_id || !content || content === "null") {
+          console.warn("⚠️ Invalid message data:", {
+            sender_id,
+            receiver_id,
+            content,
+          });
+          return;
+        }
+
+        console.log("✉️ Emitting message with content:", content);
 
         const message = await sendMessage(sender_id, receiver_id, content);
 
-        // ✅ Fetch sender info
-        const sender = await getUserById(sender_id); // should return { username, avatar }
-
-        // ✅ Emit message to receiver
         io.to(receiver_id).emit("receive_message", {
           sender_id,
           content,
           timestamp: message.created_at,
         });
 
-        // ✅ Emit notification to receiver
-        io.to(receiver_id).emit("notification", {
+        const notif = await createNotification({
+          user_id: receiver_id,
           sender_id,
-          sender_name: sender?.username || "Someone",
-          sender_avatar: sender?.avatar || null,
+          post_id: null,
+          type: "message",
           message: content,
-          created_at: message.created_at,
         });
 
-        // ✅ Acknowledge to sender
+        console.log("🔔 Notification created:", notif);
+
+        io.to(receiver_id).emit("notification", notif);
         socket.emit("message_sent", message);
       } catch (err) {
         console.error("🚨 send_message error:", err);
@@ -87,25 +96,17 @@ const initSocket = (server) => {
       }
     });
 
-    // ─── VIDEO CALL SIGNALING ─────────────────────────────────
-    socket.on("call_user", ({ to, offer }) => {
-      if (to && offer) {
-        console.log(`📞 call_user from ${socket.userId} to ${to}`);
-        io.to(to).emit("incoming_call", {
-          from: socket.userId,
-          offer,
-        });
-      }
+    // ─── WEBRTC: CALLING ────────────────────────
+    socket.on("call_user", ({ to, offer, isVoice }) => {
+      io.to(to).emit("incoming_call", {
+        from: socket.userId,
+        offer,
+        isVoice,
+      });
     });
 
     socket.on("answer_call", ({ to, answer }) => {
-      if (to && answer) {
-        console.log(`✅ answer_call from ${socket.userId} to ${to}`);
-        io.to(to).emit("call_accepted", {
-          from: socket.userId,
-          answer,
-        });
-      }
+      io.to(to).emit("call_accepted", { answer });
     });
 
     socket.on("ice_candidate", ({ to, candidate }) => {

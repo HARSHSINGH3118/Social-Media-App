@@ -1,39 +1,53 @@
+// models/likeModel.js
 const db = require("../config/db");
 
-// Toggle like/unlike on a post
-async function toggleLike(post_id, user_id) {
-  const existing = await db.query(
-    "SELECT * FROM likes WHERE post_id = $1 AND user_id = $2",
-    [post_id, user_id]
+/**
+ * Toggle a like/unlike on a post.
+ * Returns { liked: boolean } indicating the new state.
+ */
+async function toggleLike(postId, userId) {
+  // check existing
+  const { rows } = await db.query(
+    `SELECT 1
+     FROM likes
+     WHERE post_id = $1
+       AND user_id = $2
+     LIMIT 1`,
+    [postId, userId]
   );
 
-  if (existing.rows.length > 0) {
-    // Unlike
-    await db.query("DELETE FROM likes WHERE post_id = $1 AND user_id = $2", [
-      post_id,
-      user_id,
-    ]);
+  const already = rows.length > 0;
+  if (already) {
+    // remove like
+    await db.query(
+      `DELETE FROM likes
+       WHERE post_id = $1
+         AND user_id = $2`,
+      [postId, userId]
+    );
     return { liked: false };
   } else {
-    // Like
-    await db.query("INSERT INTO likes (post_id, user_id) VALUES ($1, $2)", [
-      post_id,
-      user_id,
-    ]);
+    // add like
+    await db.query(
+      `INSERT INTO likes (post_id, user_id)
+       VALUES ($1, $2)`,
+      [postId, userId]
+    );
     return { liked: true };
   }
 }
 
-// Get total like count for a post
-async function getLikeCount(post_id) {
-  const result = await db.query(
-    "SELECT COUNT(*) FROM likes WHERE post_id = $1",
-    [post_id]
+/**
+ * Return total number of likes for a post.
+ */
+async function getLikeCount(postId) {
+  const { rows } = await db.query(
+    `SELECT COUNT(*)::int AS count
+     FROM likes
+     WHERE post_id = $1`,
+    [postId]
   );
-  return parseInt(result.rows[0].count, 10);
+  return rows[0]?.count || 0;
 }
 
-module.exports = {
-  toggleLike,
-  getLikeCount,
-};
+module.exports = { toggleLike, getLikeCount };

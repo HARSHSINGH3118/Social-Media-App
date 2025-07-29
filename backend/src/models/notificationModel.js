@@ -1,38 +1,43 @@
 const db = require("../config/db");
-const { getIO } = require("../socket");
 
-// ✅ Create a new notification and emit via Socket.IO
-async function createNotification({ user_id, sender_id, post_id, type }) {
-  const result = await db.query(
-    `INSERT INTO notifications (user_id, sender_id, post_id, type)
-     VALUES ($1, $2, $3, $4) RETURNING *`,
-    [user_id, sender_id, post_id, type]
+async function createNotification({
+  user_id,
+  sender_id,
+  post_id,
+  type,
+  message,
+}) {
+  const inserted = await db.query(
+    `INSERT INTO notifications (user_id, sender_id, post_id, type, message)
+     VALUES ($1, $2, $3, $4, $5) RETURNING id`,
+    [user_id, sender_id, post_id, type, message]
   );
 
-  const notification = result.rows[0];
+  const id = inserted.rows[0].id;
 
-  // ✅ Emit notification to the user's socket room
-  const io = getIO();
-  io.to(user_id.toString()).emit("notification", notification);
+  const enriched = await db.query(
+    `SELECT n.*, u.username AS sender_name, u.avatar AS sender_avatar
+     FROM notifications n
+     JOIN users u ON n.sender_id = u.id
+     WHERE n.id = $1`,
+    [id]
+  );
 
-  return notification;
+  return enriched.rows[0];
 }
 
-// 📥 Get all notifications for a user
 async function getNotificationsByUser(user_id) {
   const result = await db.query(
-    `SELECT notifications.*, users.username AS sender_name, posts.content AS post_content
-     FROM notifications
-     JOIN users ON notifications.sender_id = users.id
-     JOIN posts ON notifications.post_id = posts.id
-     WHERE notifications.user_id = $1
-     ORDER BY notifications.created_at DESC`,
+    `SELECT n.*, u.username AS sender_name, u.avatar AS sender_avatar
+     FROM notifications n
+     JOIN users u ON n.sender_id = u.id
+     WHERE n.user_id = $1
+     ORDER BY n.created_at DESC`,
     [user_id]
   );
   return result.rows;
 }
 
-// ✅ Mark all notifications as read
 async function markAllAsRead(user_id) {
   await db.query(
     "UPDATE notifications SET is_read = TRUE WHERE user_id = $1 AND is_read = FALSE",
