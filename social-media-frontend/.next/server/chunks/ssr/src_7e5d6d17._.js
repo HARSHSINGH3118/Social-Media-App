@@ -269,14 +269,15 @@ function EditPostModal({ post, onClose, onPostUpdated }) {
 "[project]/src/components/PostCard.jsx [app-ssr] (ecmascript)": ((__turbopack_context__) => {
 "use strict";
 
+// components/PostCard.jsx
 __turbopack_context__.s({
-    "default": ()=>__TURBOPACK__default__export__
+    "default": ()=>PostCard
 });
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/server/route-modules/app-page/vendored/ssr/react-jsx-dev-runtime.js [app-ssr] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/server/route-modules/app-page/vendored/ssr/react.js [app-ssr] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/client/app-dir/link.js [app-ssr] (ecmascript)");
-var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$services$2f$api$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/services/api.js [app-ssr] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$icons$2f$fa$2f$index$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/react-icons/fa/index.mjs [app-ssr] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$services$2f$api$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/services/api.js [app-ssr] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$CommentSection$2e$jsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/components/CommentSection.jsx [app-ssr] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$EditPostModal$2e$jsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/components/EditPostModal.jsx [app-ssr] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$contexts$2f$AuthContext$2e$jsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/contexts/AuthContext.jsx [app-ssr] (ecmascript)");
@@ -289,19 +290,29 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$contexts$2f$AuthConte
 ;
 ;
 ;
-const PostCard = ({ post })=>{
+function PostCard({ post }) {
     const { id, imageUrl, caption, tags, createdBy, likedByUser, likeCount } = post;
     const { user } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$contexts$2f$AuthContext$2e$jsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useAuth"])();
     const isOwner = user?.username === createdBy?.username;
     const [liked, setLiked] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(!!likedByUser);
     const [likes, setLikes] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(likeCount || 0);
     const [showEditModal, setShowEditModal] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(false);
-    const [postState, setPostState] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(post); // Editable post state
+    const [postState, setPostState] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(post);
+    // On mount, fetch the true persisted count + liked status
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
+        __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$services$2f$api$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"].get(`/api/posts/${id}/likes`).then((res)=>{
+            setLikes(res.data.likesCount);
+            setLiked(res.data.likedByUser);
+        }).catch((err)=>console.error("Failed to fetch likes:", err));
+    }, [
+        id
+    ]);
+    // Toggle like/unlike
     const toggleLike = async ()=>{
         try {
-            const res = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$services$2f$api$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"].post(`/posts/${id}/like`);
+            const res = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$services$2f$api$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"].post(`/api/posts/${id}/like`);
             setLiked(res.data.liked);
-            setLikes(res.data.likes);
+            setLikes(res.data.likesCount);
         } catch (err) {
             console.error("Error toggling like:", err);
         }
@@ -315,9 +326,9 @@ const PostCard = ({ post })=>{
                 className: "w-full h-64 object-cover"
             }, void 0, false, {
                 fileName: "[project]/src/components/PostCard.jsx",
-                lineNumber: 35,
+                lineNumber: 55,
                 columnNumber: 7
-            }, ("TURBOPACK compile-time value", void 0)),
+            }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                 className: "p-4",
                 children: [
@@ -332,32 +343,32 @@ const PostCard = ({ post })=>{
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/PostCard.jsx",
-                                lineNumber: 43,
+                                lineNumber: 63,
                                 columnNumber: 11
-                            }, ("TURBOPACK compile-time value", void 0)),
+                            }, this),
                             isOwner && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                 onClick: ()=>setShowEditModal(true),
                                 className: "text-sm text-blue-500 hover:underline",
                                 children: "Edit"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/PostCard.jsx",
-                                lineNumber: 47,
+                                lineNumber: 67,
                                 columnNumber: 13
-                            }, ("TURBOPACK compile-time value", void 0))
+                            }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/PostCard.jsx",
-                        lineNumber: 42,
+                        lineNumber: 62,
                         columnNumber: 9
-                    }, ("TURBOPACK compile-time value", void 0)),
+                    }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                         className: "text-gray-800 mb-2",
                         children: postState.caption?.replace(/#[\w_]+/g, "").trim()
                     }, void 0, false, {
                         fileName: "[project]/src/components/PostCard.jsx",
-                        lineNumber: 56,
+                        lineNumber: 76,
                         columnNumber: 9
-                    }, ("TURBOPACK compile-time value", void 0)),
+                    }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                         className: "flex flex-wrap gap-2 mb-2",
                         children: postState.tags?.map((tag, i)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {
@@ -370,55 +381,56 @@ const PostCard = ({ post })=>{
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/PostCard.jsx",
-                                    lineNumber: 63,
+                                    lineNumber: 83,
                                     columnNumber: 15
-                                }, ("TURBOPACK compile-time value", void 0))
+                                }, this)
                             }, i, false, {
                                 fileName: "[project]/src/components/PostCard.jsx",
-                                lineNumber: 62,
+                                lineNumber: 82,
                                 columnNumber: 13
-                            }, ("TURBOPACK compile-time value", void 0)))
+                            }, this))
                     }, void 0, false, {
                         fileName: "[project]/src/components/PostCard.jsx",
-                        lineNumber: 60,
+                        lineNumber: 80,
                         columnNumber: 9
-                    }, ("TURBOPACK compile-time value", void 0)),
+                    }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                         className: "flex items-center gap-2 text-sm text-gray-600 mb-2",
                         children: [
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                 onClick: toggleLike,
+                                className: "focus:outline-none",
                                 children: liked ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$icons$2f$fa$2f$index$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["FaHeart"], {
                                     className: "text-red-500"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/PostCard.jsx",
-                                    lineNumber: 72,
+                                    lineNumber: 92,
                                     columnNumber: 22
-                                }, ("TURBOPACK compile-time value", void 0)) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$icons$2f$fa$2f$index$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["FaRegHeart"], {}, void 0, false, {
+                                }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$icons$2f$fa$2f$index$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["FaRegHeart"], {}, void 0, false, {
                                     fileName: "[project]/src/components/PostCard.jsx",
-                                    lineNumber: 72,
+                                    lineNumber: 92,
                                     columnNumber: 61
-                                }, ("TURBOPACK compile-time value", void 0))
+                                }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/PostCard.jsx",
-                                lineNumber: 71,
+                                lineNumber: 91,
                                 columnNumber: 11
-                            }, ("TURBOPACK compile-time value", void 0)),
+                            }, this),
                             likes,
                             " likes"
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/PostCard.jsx",
-                        lineNumber: 70,
+                        lineNumber: 90,
                         columnNumber: 9
-                    }, ("TURBOPACK compile-time value", void 0)),
+                    }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$CommentSection$2e$jsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {
                         postId: id
                     }, void 0, false, {
                         fileName: "[project]/src/components/PostCard.jsx",
-                        lineNumber: 77,
+                        lineNumber: 97,
                         columnNumber: 9
-                    }, ("TURBOPACK compile-time value", void 0)),
+                    }, this),
                     showEditModal && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$EditPostModal$2e$jsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {
                         post: postState,
                         onClose: ()=>setShowEditModal(false),
@@ -428,23 +440,22 @@ const PostCard = ({ post })=>{
                                 }))
                     }, void 0, false, {
                         fileName: "[project]/src/components/PostCard.jsx",
-                        lineNumber: 80,
+                        lineNumber: 100,
                         columnNumber: 11
-                    }, ("TURBOPACK compile-time value", void 0))
+                    }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/PostCard.jsx",
-                lineNumber: 41,
+                lineNumber: 61,
                 columnNumber: 7
-            }, ("TURBOPACK compile-time value", void 0))
+            }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/PostCard.jsx",
-        lineNumber: 34,
+        lineNumber: 54,
         columnNumber: 5
-    }, ("TURBOPACK compile-time value", void 0));
-};
-const __TURBOPACK__default__export__ = PostCard;
+    }, this);
+}
 }),
 "[project]/src/app/explore/tag/[tag]/page.jsx [app-ssr] (ecmascript)": ((__turbopack_context__) => {
 "use strict";

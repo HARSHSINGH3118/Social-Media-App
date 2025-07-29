@@ -351,6 +351,14 @@ function ChatPage() {
             });
         };
         await pc.setRemoteDescription(offer);
+        for (const cand of pendingCandidates.current){
+            try {
+                await pc.addIceCandidate(cand);
+            } catch (e) {
+                console.error("Buffered ICE Error (accept):", e);
+            }
+        }
+        pendingCandidates.current = [];
         const answer = await pc.createAnswer();
         await pc.setLocalDescription(answer);
         socket.emit("answer_call", {
@@ -398,7 +406,7 @@ function ChatPage() {
                                     children: "←"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/messages/[userId]/page.jsx",
-                                    lineNumber: 244,
+                                    lineNumber: 253,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("img", {
@@ -407,7 +415,7 @@ function ChatPage() {
                                     className: "w-10 h-10 rounded-full"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/messages/[userId]/page.jsx",
-                                    lineNumber: 247,
+                                    lineNumber: 256,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
@@ -415,13 +423,13 @@ function ChatPage() {
                                     children: partner.username
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/messages/[userId]/page.jsx",
-                                    lineNumber: 252,
+                                    lineNumber: 261,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/messages/[userId]/page.jsx",
-                            lineNumber: 243,
+                            lineNumber: 252,
                             columnNumber: 11
                         }, this),
                         !inCall && !incomingCall && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -433,7 +441,7 @@ function ChatPage() {
                                     children: "📹"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/messages/[userId]/page.jsx",
-                                    lineNumber: 256,
+                                    lineNumber: 265,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -442,13 +450,13 @@ function ChatPage() {
                                     children: "🎤"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/messages/[userId]/page.jsx",
-                                    lineNumber: 262,
+                                    lineNumber: 271,
                                     columnNumber: 15
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/messages/[userId]/page.jsx",
-                            lineNumber: 255,
+                            lineNumber: 264,
                             columnNumber: 13
                         }, this),
                         inCall && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -457,13 +465,13 @@ function ChatPage() {
                             children: "✖️"
                         }, void 0, false, {
                             fileName: "[project]/src/app/messages/[userId]/page.jsx",
-                            lineNumber: 271,
+                            lineNumber: 280,
                             columnNumber: 13
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/app/messages/[userId]/page.jsx",
-                    lineNumber: 242,
+                    lineNumber: 251,
                     columnNumber: 9
                 }, this),
                 (calling || inCall) && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -475,7 +483,7 @@ function ChatPage() {
                             className: "w-full h-full object-cover"
                         }, void 0, false, {
                             fileName: "[project]/src/app/messages/[userId]/page.jsx",
-                            lineNumber: 280,
+                            lineNumber: 289,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("video", {
@@ -485,13 +493,13 @@ function ChatPage() {
                             className: "absolute bottom-4 right-4 w-32 h-24 object-cover rounded-lg border-2 border-white"
                         }, void 0, false, {
                             fileName: "[project]/src/app/messages/[userId]/page.jsx",
-                            lineNumber: 285,
+                            lineNumber: 294,
                             columnNumber: 13
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/app/messages/[userId]/page.jsx",
-                    lineNumber: 279,
+                    lineNumber: 288,
                     columnNumber: 11
                 }, this),
                 incomingCall && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -507,7 +515,7 @@ function ChatPage() {
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/messages/[userId]/page.jsx",
-                                lineNumber: 298,
+                                lineNumber: 307,
                                 columnNumber: 15
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -516,18 +524,18 @@ function ChatPage() {
                                 children: "Accept"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/messages/[userId]/page.jsx",
-                                lineNumber: 299,
+                                lineNumber: 308,
                                 columnNumber: 15
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/messages/[userId]/page.jsx",
-                        lineNumber: 297,
+                        lineNumber: 306,
                         columnNumber: 13
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/src/app/messages/[userId]/page.jsx",
-                    lineNumber: 296,
+                    lineNumber: 305,
                     columnNumber: 11
                 }, this),
                 !calling && !inCall && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Fragment"], {
@@ -545,7 +553,7 @@ function ChatPage() {
                                                 className: "w-8 h-8 rounded-full mr-2"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/messages/[userId]/page.jsx",
-                                                lineNumber: 321,
+                                                lineNumber: 330,
                                                 columnNumber: 23
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -556,18 +564,18 @@ function ChatPage() {
                                                     className: "rounded max-w-full"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/messages/[userId]/page.jsx",
-                                                    lineNumber: 334,
+                                                    lineNumber: 343,
                                                     columnNumber: 25
                                                 }, this) : msg.content
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/messages/[userId]/page.jsx",
-                                                lineNumber: 326,
+                                                lineNumber: 335,
                                                 columnNumber: 21
                                             }, this)
                                         ]
                                     }, i, true, {
                                         fileName: "[project]/src/app/messages/[userId]/page.jsx",
-                                        lineNumber: 316,
+                                        lineNumber: 325,
                                         columnNumber: 19
                                     }, this);
                                 }),
@@ -575,13 +583,13 @@ function ChatPage() {
                                     ref: endRef
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/messages/[userId]/page.jsx",
-                                    lineNumber: 346,
+                                    lineNumber: 355,
                                     columnNumber: 15
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/messages/[userId]/page.jsx",
-                            lineNumber: 312,
+                            lineNumber: 321,
                             columnNumber: 13
                         }, this),
                         isTyping && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -591,12 +599,12 @@ function ChatPage() {
                                 children: "Typing…"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/messages/[userId]/page.jsx",
-                                lineNumber: 351,
+                                lineNumber: 360,
                                 columnNumber: 17
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/app/messages/[userId]/page.jsx",
-                            lineNumber: 350,
+                            lineNumber: 359,
                             columnNumber: 15
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -608,7 +616,7 @@ function ChatPage() {
                                     children: "😀"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/messages/[userId]/page.jsx",
-                                    lineNumber: 356,
+                                    lineNumber: 365,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -617,7 +625,7 @@ function ChatPage() {
                                     children: "📷"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/messages/[userId]/page.jsx",
-                                    lineNumber: 362,
+                                    lineNumber: 371,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -628,7 +636,7 @@ function ChatPage() {
                                     className: "hidden"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/messages/[userId]/page.jsx",
-                                    lineNumber: 365,
+                                    lineNumber: 374,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -640,7 +648,7 @@ function ChatPage() {
                                     className: "flex-1 bg-gray-700 px-4 py-2 rounded-full focus:outline-none"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/messages/[userId]/page.jsx",
-                                    lineNumber: 372,
+                                    lineNumber: 381,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -649,13 +657,13 @@ function ChatPage() {
                                     children: "Send"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/messages/[userId]/page.jsx",
-                                    lineNumber: 380,
+                                    lineNumber: 389,
                                     columnNumber: 15
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/messages/[userId]/page.jsx",
-                            lineNumber: 355,
+                            lineNumber: 364,
                             columnNumber: 13
                         }, this),
                         showEmojiPicker && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -666,12 +674,12 @@ function ChatPage() {
                                     children: e
                                 }, e, false, {
                                     fileName: "[project]/src/app/messages/[userId]/page.jsx",
-                                    lineNumber: 391,
+                                    lineNumber: 400,
                                     columnNumber: 19
                                 }, this))
                         }, void 0, false, {
                             fileName: "[project]/src/app/messages/[userId]/page.jsx",
-                            lineNumber: 389,
+                            lineNumber: 398,
                             columnNumber: 15
                         }, this)
                     ]
@@ -679,12 +687,12 @@ function ChatPage() {
             ]
         }, void 0, true, {
             fileName: "[project]/src/app/messages/[userId]/page.jsx",
-            lineNumber: 240,
+            lineNumber: 249,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "[project]/src/app/messages/[userId]/page.jsx",
-        lineNumber: 239,
+        lineNumber: 248,
         columnNumber: 5
     }, this);
 }

@@ -35,9 +35,9 @@ export function SocketProvider({ children }) {
       console.log("📥 New message:", msg);
     });
 
-    s.on("notification", (notif) => {
-      console.log("🔔 Notification:", notif);
-    });
+    // s.on("notification", (notif) => {
+    //   console.log("🔔 Notification:", notif);
+    // });
 
     return () => {
       s.disconnect();

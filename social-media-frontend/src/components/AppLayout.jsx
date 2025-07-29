@@ -1,15 +1,17 @@
-// src/components/AppLayout.jsx
 "use client";
 
 import { SocketProvider } from "@/contexts/SocketContext";
-import Navbar from "./Navbar";
+import Sidebar from "./Sidebar";
 
 export default function AppLayout({ children }) {
   return (
     <SocketProvider>
-      <div className="min-h-screen bg-gray-900 text-white">
-        <Navbar />
-        <main className="px-4">{children}</main>
+      <div className="flex min-h-screen bg-gray-100 text-gray-900">
+        {/* Sidebar on the left */}
+        <Sidebar />
+
+        {/* Main content area */}
+        <main className="flex-1 p-6 overflow-y-auto">{children}</main>
       </div>
     </SocketProvider>
   );

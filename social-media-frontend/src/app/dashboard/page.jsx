@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
-import AppLayout from "@/components/AppLayout"; // ✅ Add this
+import AppLayout from "@/components/AppLayout";
 
 export default function DashboardPage() {
   const { user, loading, logout } = useAuth();
@@ -25,15 +25,9 @@ export default function DashboardPage() {
 
   return (
     <AppLayout>
-      <div className="flex flex-col items-center justify-center gap-4 bg-gray-900 text-white p-8 min-h-screen">
+      <div className="flex flex-col items-center justify-center gap-4 bg-white text-gray-800 p-8 rounded shadow">
         <h1 className="text-3xl font-bold">Welcome, {user?.username}!</h1>
-
-        <button
-          onClick={logout}
-          className="bg-red-500 hover:bg-red-600 text-white font-semibold px-6 py-2 rounded-md shadow"
-        >
-          Logout
-        </button>
+        <p className="text-lg">This is your personalized Huddle dashboard.</p>
       </div>
     </AppLayout>
   );

@@ -211,6 +211,15 @@ export default function ChatPage() {
     };
 
     await pc.setRemoteDescription(offer);
+    for (const cand of pendingCandidates.current) {
+      try {
+        await pc.addIceCandidate(cand);
+      } catch (e) {
+        console.error("Buffered ICE Error (accept):", e);
+      }
+    }
+    pendingCandidates.current = [];
+
     const answer = await pc.createAnswer();
     await pc.setLocalDescription(answer);
     socket.emit("answer_call", { to: from, answer });

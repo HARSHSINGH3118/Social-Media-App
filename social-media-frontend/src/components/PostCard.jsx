@@ -1,16 +1,24 @@
+// components/PostCard.jsx
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import api from "@/services/api";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
+import api from "@/services/api";
 import CommentSection from "./CommentSection";
 import EditPostModal from "./EditPostModal";
 import { useAuth } from "@/contexts/AuthContext";
 
-const PostCard = ({ post }) => {
-  const { id, imageUrl, caption, tags, createdBy, likedByUser, likeCount } =
-    post;
+export default function PostCard({ post }) {
+  const {
+    id,
+    imageUrl,
+    caption,
+    tags,
+    createdBy,
+    likedByUser, // may be initially passed from SSR
+    likeCount, // initial count
+  } = post;
 
   const { user } = useAuth();
   const isOwner = user?.username === createdBy?.username;
@@ -18,13 +26,25 @@ const PostCard = ({ post }) => {
   const [liked, setLiked] = useState(!!likedByUser);
   const [likes, setLikes] = useState(likeCount || 0);
   const [showEditModal, setShowEditModal] = useState(false);
-  const [postState, setPostState] = useState(post); // Editable post state
+  const [postState, setPostState] = useState(post);
 
+  // On mount, fetch the true persisted count + liked status
+  useEffect(() => {
+    api
+      .get(`/api/posts/${id}/likes`)
+      .then((res) => {
+        setLikes(res.data.likesCount);
+        setLiked(res.data.likedByUser);
+      })
+      .catch((err) => console.error("Failed to fetch likes:", err));
+  }, [id]);
+
+  // Toggle like/unlike
   const toggleLike = async () => {
     try {
       const res = await api.post(`/api/posts/${id}/like`);
       setLiked(res.data.liked);
-      setLikes(res.data.likes);
+      setLikes(res.data.likesCount);
     } catch (err) {
       console.error("Error toggling like:", err);
     }
@@ -68,7 +88,7 @@ const PostCard = ({ post }) => {
         </div>
 
         <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
-          <button onClick={toggleLike}>
+          <button onClick={toggleLike} className="focus:outline-none">
             {liked ? <FaHeart className="text-red-500" /> : <FaRegHeart />}
           </button>
           {likes} likes
@@ -88,6 +108,4 @@ const PostCard = ({ post }) => {
       </div>
     </div>
   );
-};
-
-export default PostCard;
+}
