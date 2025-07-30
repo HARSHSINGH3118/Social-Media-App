@@ -1,4 +1,5 @@
 "use client";
+
 import { useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useAuth } from "../../../contexts/AuthContext";
@@ -11,7 +12,7 @@ export default function AuthCallback() {
 
   useEffect(() => {
     if (token) {
-      login(token); // ✅ Triggers router.push("/dashboard") inside context
+      login(token); // ✅ auto redirects to dashboard
     } else {
       router.push("/login");
     }
@@ -23,3 +24,6 @@ export default function AuthCallback() {
     </div>
   );
 }
+
+// ✅ Force dynamic rendering to fix build error
+export const dynamic = "force-dynamic";
