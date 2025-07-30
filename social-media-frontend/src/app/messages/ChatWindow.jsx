@@ -37,6 +37,7 @@ export default function ChatWindow({ userId }) {
   const [isVoiceOnly, setIsVoiceOnly] = useState(false);
 
   const fileInputRef = useRef();
+  const cameraInputRef = useRef();
   const endRef = useRef();
   const typingTimer = useRef();
   const localVideoRef = useRef();
@@ -163,6 +164,7 @@ export default function ChatWindow({ userId }) {
   // emoji + photo
   const addEmoji = (e) => setInput((i) => i + e);
   const pickPhoto = () => fileInputRef.current.click();
+  const takePhoto = () => cameraInputRef.current.click();
   const onPhotoChange = (e) => {
     const f = e.target.files[0];
     if (!f) return;
@@ -422,15 +424,37 @@ export default function ChatWindow({ userId }) {
             <div className="px-4 pb-1 italic text-gray-500">Typing…</div>
           )}
 
+          {/* …later in your JSX, replace your old “input bar” with: */}
           <div className="px-4 py-3 bg-white border-t flex items-center space-x-2">
+            {/* emoji toggle */}
             <button
               onClick={() => setShowEmojiPicker((v) => !v)}
               className="text-2xl"
+              title="Emoji"
             >
               😀
             </button>
-            <button onClick={pickPhoto} className="text-2xl">
-              📷
+
+            {/* take a photo via camera */}
+            <button onClick={takePhoto} className="text-2xl" title="Take Photo">
+              📸
+            </button>
+            <input
+              type="file"
+              accept="image/*"
+              capture="environment"
+              ref={cameraInputRef}
+              onChange={onPhotoChange}
+              className="hidden"
+            />
+
+            {/* pick from gallery */}
+            <button
+              onClick={pickPhoto}
+              className="text-2xl"
+              title="Choose Image"
+            >
+              🖼️
             </button>
             <input
               type="file"
@@ -439,6 +463,8 @@ export default function ChatWindow({ userId }) {
               onChange={onPhotoChange}
               className="hidden"
             />
+
+            {/* text input */}
             <input
               type="text"
               value={input}
@@ -447,6 +473,8 @@ export default function ChatWindow({ userId }) {
               placeholder="Type a message…"
               className="flex-1 border border-gray-300 px-3 py-2 rounded-full focus:outline-none"
             />
+
+            {/* send button */}
             <button
               onClick={sendChat}
               className="bg-blue-500 text-white px-4 py-2 rounded-full"
@@ -457,13 +485,13 @@ export default function ChatWindow({ userId }) {
 
           {showEmojiPicker && (
             <div className="grid grid-cols-8 gap-2 bg-white border-t px-4 py-2 max-h-40 overflow-y-auto">
-              {EMOJI_LIST.map((e) => (
+              {EMOJI_LIST.map((emoji) => (
                 <button
-                  key={e}
-                  onClick={() => addEmoji(e)}
+                  key={emoji}
+                  onClick={() => addEmoji(emoji)}
                   className="text-2xl"
                 >
-                  {e}
+                  {emoji}
                 </button>
               ))}
             </div>

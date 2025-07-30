@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 6, "column": 0}, "map": {"version":3,"sources":[],"names":[],"mappings":"","debugId":null}},
+    {"offset": {"line": 58, "column": 0}, "map": {"version":3,"sources":["file:///H:/Repositories/Social_media_app/social-media-frontend/src/app/api/news/route.js"],"sourcesContent":["// src/app/api/news/route.js\r\nexport async function GET() {\r\n  const API_KEY = process.env.GNEWS_API_KEY;\r\n  const endpoint = `https://gnews.io/api/v4/top-headlines?lang=en&token=${API_KEY}`;\r\n\r\n  try {\r\n    const res = await fetch(endpoint);\r\n    if (!res.ok) throw new Error(\"Failed to fetch news\");\r\n\r\n    const data = await res.json();\r\n    return Response.json(data.articles); // Send articles array\r\n  } catch (err) {\r\n    console.error(\"News API error:\", err.message);\r\n    return new Response(JSON.stringify({ error: \"Failed to fetch news\" }), {\r\n      status: 500,\r\n    });\r\n  }\r\n}\r\n"],"names":[],"mappings":"AAAA,4BAA4B;;;;AACrB,eAAe;IACpB,MAAM,UAAU,QAAQ,GAAG,CAAC,aAAa;IACzC,MAAM,WAAW,CAAC,oDAAoD,EAAE,SAAS;IAEjF,IAAI;QACF,MAAM,MAAM,MAAM,MAAM;QACxB,IAAI,CAAC,IAAI,EAAE,EAAE,MAAM,IAAI,MAAM;QAE7B,MAAM,OAAO,MAAM,IAAI,IAAI;QAC3B,OAAO,SAAS,IAAI,CAAC,KAAK,QAAQ,GAAG,sBAAsB;IAC7D,EAAE,OAAO,KAAK;QACZ,QAAQ,KAAK,CAAC,mBAAmB,IAAI,OAAO;QAC5C,OAAO,IAAI,SAAS,KAAK,SAAS,CAAC;YAAE,OAAO;QAAuB,IAAI;YACrE,QAAQ;QACV;IACF;AACF","debugId":null}}]
+}

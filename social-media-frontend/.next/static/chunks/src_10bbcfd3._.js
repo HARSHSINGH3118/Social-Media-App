@@ -616,6 +616,7 @@ function ChatWindow(param) {
     const [calling, setCalling] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
     const [isVoiceOnly, setIsVoiceOnly] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
     const fileInputRef = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRef"])();
+    const cameraInputRef = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRef"])();
     const endRef = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRef"])();
     const typingTimer = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRef"])();
     const localVideoRef = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRef"])();
@@ -801,6 +802,7 @@ function ChatWindow(param) {
     // emoji + photo
     const addEmoji = (e)=>setInput((i)=>i + e);
     const pickPhoto = ()=>fileInputRef.current.click();
+    const takePhoto = ()=>cameraInputRef.current.click();
     const onPhotoChange = (e)=>{
         const f = e.target.files[0];
         if (!f) return;
@@ -943,7 +945,7 @@ function ChatWindow(param) {
                                 className: "w-8 h-8 rounded-full"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/messages/ChatWindow.jsx",
-                                lineNumber: 266,
+                                lineNumber: 268,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -951,13 +953,13 @@ function ChatWindow(param) {
                                 children: partner.username
                             }, void 0, false, {
                                 fileName: "[project]/src/app/messages/ChatWindow.jsx",
-                                lineNumber: 271,
+                                lineNumber: 273,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/messages/ChatWindow.jsx",
-                        lineNumber: 265,
+                        lineNumber: 267,
                         columnNumber: 9
                     }, this),
                     !inCall && !incomingCall && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -971,12 +973,12 @@ function ChatWindow(param) {
                                     size: 18
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/messages/ChatWindow.jsx",
-                                    lineNumber: 280,
+                                    lineNumber: 282,
                                     columnNumber: 15
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/app/messages/ChatWindow.jsx",
-                                lineNumber: 275,
+                                lineNumber: 277,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -987,18 +989,18 @@ function ChatWindow(param) {
                                     size: 18
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/messages/ChatWindow.jsx",
-                                    lineNumber: 287,
+                                    lineNumber: 289,
                                     columnNumber: 15
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/app/messages/ChatWindow.jsx",
-                                lineNumber: 282,
+                                lineNumber: 284,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/messages/ChatWindow.jsx",
-                        lineNumber: 274,
+                        lineNumber: 276,
                         columnNumber: 11
                     }, this),
                     (inCall || calling) && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1008,13 +1010,13 @@ function ChatWindow(param) {
                         children: "✖️"
                     }, void 0, false, {
                         fileName: "[project]/src/app/messages/ChatWindow.jsx",
-                        lineNumber: 292,
+                        lineNumber: 294,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/messages/ChatWindow.jsx",
-                lineNumber: 264,
+                lineNumber: 266,
                 columnNumber: 7
             }, this),
             incomingCall && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1027,7 +1029,7 @@ function ChatWindow(param) {
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/messages/ChatWindow.jsx",
-                        lineNumber: 305,
+                        lineNumber: 307,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1036,13 +1038,13 @@ function ChatWindow(param) {
                         children: "Accept"
                     }, void 0, false, {
                         fileName: "[project]/src/app/messages/ChatWindow.jsx",
-                        lineNumber: 306,
+                        lineNumber: 308,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/messages/ChatWindow.jsx",
-                lineNumber: 304,
+                lineNumber: 306,
                 columnNumber: 9
             }, this),
             (calling || inCall) && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1054,7 +1056,7 @@ function ChatWindow(param) {
                         className: "w-full h-full object-cover"
                     }, void 0, false, {
                         fileName: "[project]/src/app/messages/ChatWindow.jsx",
-                        lineNumber: 318,
+                        lineNumber: 320,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("video", {
@@ -1064,13 +1066,13 @@ function ChatWindow(param) {
                         className: "absolute bottom-4 right-4 w-32 h-24 object-cover rounded border-2 border-white"
                     }, void 0, false, {
                         fileName: "[project]/src/app/messages/ChatWindow.jsx",
-                        lineNumber: 323,
+                        lineNumber: 325,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/messages/ChatWindow.jsx",
-                lineNumber: 317,
+                lineNumber: 319,
                 columnNumber: 9
             }, this),
             !calling && !inCall && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Fragment"], {
@@ -1085,7 +1087,7 @@ function ChatWindow(param) {
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/messages/ChatWindow.jsx",
-                                lineNumber: 338,
+                                lineNumber: 340,
                                 columnNumber: 15
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1093,13 +1095,13 @@ function ChatWindow(param) {
                                 children: "✖"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/messages/ChatWindow.jsx",
-                                lineNumber: 339,
+                                lineNumber: 341,
                                 columnNumber: 15
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/messages/ChatWindow.jsx",
-                        lineNumber: 337,
+                        lineNumber: 339,
                         columnNumber: 13
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1112,7 +1114,7 @@ function ChatWindow(param) {
                                     children: item.label
                                 }, item.key, false, {
                                     fileName: "[project]/src/app/messages/ChatWindow.jsx",
-                                    lineNumber: 346,
+                                    lineNumber: 348,
                                     columnNumber: 17
                                 }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                     className: "flex items-end ".concat(item.msg.sender_id === user.id ? "justify-end" : "justify-start"),
@@ -1122,7 +1124,7 @@ function ChatWindow(param) {
                                             className: "w-6 h-6 rounded-full mr-2"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/messages/ChatWindow.jsx",
-                                            lineNumber: 362,
+                                            lineNumber: 364,
                                             columnNumber: 21
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1133,7 +1135,7 @@ function ChatWindow(param) {
                                                     children: ((_messages_find = messages.find((m)=>m.id === item.msg.reply_to)) === null || _messages_find === void 0 ? void 0 : _messages_find.content.slice(0, 20)) || "(deleted)"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/messages/ChatWindow.jsx",
-                                                    lineNumber: 369,
+                                                    lineNumber: 371,
                                                     columnNumber: 23
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1145,7 +1147,7 @@ function ChatWindow(param) {
                                                             className: "w-32 h-32 object-cover rounded-lg"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/messages/ChatWindow.jsx",
-                                                            lineNumber: 383,
+                                                            lineNumber: 385,
                                                             columnNumber: 25
                                                         }, this) : item.msg.content,
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1153,13 +1155,13 @@ function ChatWindow(param) {
                                                             children: (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$dayjs$2f$dayjs$2e$min$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"])(item.msg.created_at).format("h:mm A")
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/messages/ChatWindow.jsx",
-                                                            lineNumber: 391,
+                                                            lineNumber: 393,
                                                             columnNumber: 23
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/app/messages/ChatWindow.jsx",
-                                                    lineNumber: 375,
+                                                    lineNumber: 377,
                                                     columnNumber: 21
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1172,12 +1174,12 @@ function ChatWindow(param) {
                                                                 size: 12
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/messages/ChatWindow.jsx",
-                                                                lineNumber: 400,
+                                                                lineNumber: 402,
                                                                 columnNumber: 25
                                                             }, this)
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/messages/ChatWindow.jsx",
-                                                            lineNumber: 396,
+                                                            lineNumber: 398,
                                                             columnNumber: 23
                                                         }, this),
                                                         item.msg.sender_id === user.id && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1187,12 +1189,12 @@ function ChatWindow(param) {
                                                                 size: 12
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/messages/ChatWindow.jsx",
-                                                                lineNumber: 407,
+                                                                lineNumber: 409,
                                                                 columnNumber: 27
                                                             }, this)
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/messages/ChatWindow.jsx",
-                                                            lineNumber: 403,
+                                                            lineNumber: 405,
                                                             columnNumber: 25
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1201,30 +1203,30 @@ function ChatWindow(param) {
                                                                 size: 12
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/messages/ChatWindow.jsx",
-                                                                lineNumber: 411,
+                                                                lineNumber: 413,
                                                                 columnNumber: 25
                                                             }, this)
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/messages/ChatWindow.jsx",
-                                                            lineNumber: 410,
+                                                            lineNumber: 412,
                                                             columnNumber: 23
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/app/messages/ChatWindow.jsx",
-                                                    lineNumber: 395,
+                                                    lineNumber: 397,
                                                     columnNumber: 21
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/messages/ChatWindow.jsx",
-                                            lineNumber: 367,
+                                            lineNumber: 369,
                                             columnNumber: 19
                                         }, this)
                                     ]
                                 }, item.key, true, {
                                     fileName: "[project]/src/app/messages/ChatWindow.jsx",
-                                    lineNumber: 353,
+                                    lineNumber: 355,
                                     columnNumber: 17
                                 }, this);
                             }),
@@ -1232,13 +1234,13 @@ function ChatWindow(param) {
                                 ref: endRef
                             }, void 0, false, {
                                 fileName: "[project]/src/app/messages/ChatWindow.jsx",
-                                lineNumber: 418,
+                                lineNumber: 420,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/messages/ChatWindow.jsx",
-                        lineNumber: 343,
+                        lineNumber: 345,
                         columnNumber: 11
                     }, this),
                     isTyping && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1246,7 +1248,7 @@ function ChatWindow(param) {
                         children: "Typing…"
                     }, void 0, false, {
                         fileName: "[project]/src/app/messages/ChatWindow.jsx",
-                        lineNumber: 422,
+                        lineNumber: 424,
                         columnNumber: 13
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1255,19 +1257,43 @@ function ChatWindow(param) {
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                 onClick: ()=>setShowEmojiPicker((v)=>!v),
                                 className: "text-2xl",
+                                title: "Emoji",
                                 children: "😀"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/messages/ChatWindow.jsx",
-                                lineNumber: 426,
+                                lineNumber: 430,
+                                columnNumber: 13
+                            }, this),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                onClick: takePhoto,
+                                className: "text-2xl",
+                                title: "Take Photo",
+                                children: "📸"
+                            }, void 0, false, {
+                                fileName: "[project]/src/app/messages/ChatWindow.jsx",
+                                lineNumber: 439,
+                                columnNumber: 13
+                            }, this),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                                type: "file",
+                                accept: "image/*",
+                                capture: "environment",
+                                ref: cameraInputRef,
+                                onChange: onPhotoChange,
+                                className: "hidden"
+                            }, void 0, false, {
+                                fileName: "[project]/src/app/messages/ChatWindow.jsx",
+                                lineNumber: 442,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                 onClick: pickPhoto,
                                 className: "text-2xl",
-                                children: "📷"
+                                title: "Choose Image",
+                                children: "🖼️"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/messages/ChatWindow.jsx",
-                                lineNumber: 432,
+                                lineNumber: 452,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -1278,7 +1304,7 @@ function ChatWindow(param) {
                                 className: "hidden"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/messages/ChatWindow.jsx",
-                                lineNumber: 435,
+                                lineNumber: 459,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -1290,7 +1316,7 @@ function ChatWindow(param) {
                                 className: "flex-1 border border-gray-300 px-3 py-2 rounded-full focus:outline-none"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/messages/ChatWindow.jsx",
-                                lineNumber: 442,
+                                lineNumber: 468,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1299,29 +1325,29 @@ function ChatWindow(param) {
                                 children: "Send"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/messages/ChatWindow.jsx",
-                                lineNumber: 450,
+                                lineNumber: 478,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/messages/ChatWindow.jsx",
-                        lineNumber: 425,
+                        lineNumber: 428,
                         columnNumber: 11
                     }, this),
                     showEmojiPicker && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                         className: "grid grid-cols-8 gap-2 bg-white border-t px-4 py-2 max-h-40 overflow-y-auto",
-                        children: EMOJI_LIST.map((e)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
-                                onClick: ()=>addEmoji(e),
+                        children: EMOJI_LIST.map((emoji)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                onClick: ()=>addEmoji(emoji),
                                 className: "text-2xl",
-                                children: e
-                            }, e, false, {
+                                children: emoji
+                            }, emoji, false, {
                                 fileName: "[project]/src/app/messages/ChatWindow.jsx",
-                                lineNumber: 461,
+                                lineNumber: 489,
                                 columnNumber: 17
                             }, this))
                     }, void 0, false, {
                         fileName: "[project]/src/app/messages/ChatWindow.jsx",
-                        lineNumber: 459,
+                        lineNumber: 487,
                         columnNumber: 13
                     }, this)
                 ]
@@ -1329,11 +1355,11 @@ function ChatWindow(param) {
         ]
     }, void 0, true, {
         fileName: "[project]/src/app/messages/ChatWindow.jsx",
-        lineNumber: 262,
+        lineNumber: 264,
         columnNumber: 5
     }, this);
 }
-_s(ChatWindow, "kQQvVz0AOZ0HVKDOMUMTlVcpAiY=", false, function() {
+_s(ChatWindow, "mPrTEIAdD3882UIPNm68XLOPzJw=", false, function() {
     return [
         __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$contexts$2f$AuthContext$2e$jsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useAuth"],
         __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRouter"],
