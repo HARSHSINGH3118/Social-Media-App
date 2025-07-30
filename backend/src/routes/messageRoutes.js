@@ -1,22 +1,23 @@
 const express = require("express");
 const router = express.Router();
 const { protect } = require("../middleware/authMiddleware");
-
 const {
-  fetchChat,
   createMessage,
   getMessagesBetweenUsersHandler,
+  getLastMessagesByUserId,
+  deleteMessageHandler, // ✅ Add this line
 } = require("../controllers/messageController");
 
-// 📩 Send a new message
-// POST /api/messages
+// Fetch latest message per chat partner (sidebar)
+router.get("/last", protect, getLastMessagesByUserId);
+
+// Send a message
 router.post("/", protect, createMessage);
 
-// 💬 Get chat history with a specific user
-// GET /api/messages/:userId
+// Get chat between 2 users
 router.get("/:userId", protect, getMessagesBetweenUsersHandler);
 
-// (Optional) Alias if needed
-// router.get("/chat/:userId", protect, fetchChat);
+// Delete message by ID
+router.delete("/:messageId", protect, deleteMessageHandler);
 
 module.exports = router;
