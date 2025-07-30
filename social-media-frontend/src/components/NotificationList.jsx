@@ -1,3 +1,4 @@
+// src/components/NotificationList.jsx
 "use client";
 
 import { useEffect, useState, useRef } from "react";
@@ -14,7 +15,6 @@ export default function NotificationList() {
   const [marking, setMarking] = useState(false);
   const realtimeBuffer = useRef([]);
 
-  // ✅ Merge notifications by ID
   const mergeUnique = (a, b) => {
     const map = new Map();
     [...a, ...b].forEach((n) => n?.id && map.set(n.id, n));
@@ -31,7 +31,7 @@ export default function NotificationList() {
       const serverNotes = res.data.notifications || res.data;
       const merged = mergeUnique(realtimeBuffer.current, serverNotes);
       setNotes(merged);
-      realtimeBuffer.current = []; // clear after merge
+      realtimeBuffer.current = [];
     } catch (e) {
       console.error("❌ Failed to fetch notifications", e);
     } finally {
@@ -39,29 +39,19 @@ export default function NotificationList() {
     }
   };
 
-  // ✅ On mount
   useEffect(() => {
     if (user) fetchNotifications();
   }, [user]);
 
-  // ✅ Real-time update from socket
-  // ✅ Store and show real-time notifications immediately
   useEffect(() => {
     if (!socket) return;
-
     const handler = (notif) => {
-      console.log("🟢 RECEIVED notification via socket:", notif);
-      setNotes((prev) => {
-        const updated = mergeUnique([notif], prev);
-        return updated.slice(0, 30); // ✅ Limit to latest 30
-      });
+      setNotes((prev) => mergeUnique([notif], prev).slice(0, 30));
     };
-
     socket.on("notification", handler);
     return () => socket.off("notification", handler);
   }, [socket]);
 
-  // ✅ Refetch on focus/tab change
   useEffect(() => {
     const onFocus = () => fetchNotifications();
     window.addEventListener("focus", onFocus);
@@ -81,9 +71,15 @@ export default function NotificationList() {
   };
 
   const formatText = (n) => {
+    if (n.type === "message") {
+      const msg = n.message || "";
+      if (msg.startsWith("data:image")) {
+        return "sent you an image";
+      } else {
+        return `sent you: "${msg}"`;
+      }
+    }
     switch (n.type) {
-      case "message":
-        return `sent you: "${n.message}"`; // ✅ SHOW MESSAGE CONTENT
       case "like":
         return "liked your post";
       case "comment":
@@ -101,7 +97,6 @@ export default function NotificationList() {
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
-        <h2 className="text-xl font-bold">Notifications</h2>
         <button
           onClick={handleMarkAllRead}
           disabled={marking}

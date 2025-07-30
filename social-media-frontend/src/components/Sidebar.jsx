@@ -40,7 +40,10 @@ export default function Sidebar() {
   }, [pathname]);
 
   return (
-    <aside className="w-64 bg-gray-900 text-white flex flex-col p-4 min-h-screen">
+    <aside
+      className="w-64 bg-gray-900 text-white flex flex-col p-4 min-h-screen overflow-hidden
+"
+    >
       <div
         className="text-3xl font-bold text-blue-400 mb-8 cursor-pointer"
         onClick={() => router.push("/dashboard")}

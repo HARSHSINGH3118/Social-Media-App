@@ -4,7 +4,7 @@
   "/explore/page": "app/explore/page.js",
   "/explore/tag/[tag]/page": "app/explore/tag/[tag]/page.js",
   "/favicon.ico/route": "app/favicon.ico/route.js",
-  "/messages/[userId]/page": "app/messages/[userId]/page.js",
+  "/login/page": "app/login/page.js",
   "/messages/page": "app/messages/page.js",
   "/notifications/page": "app/notifications/page.js",
   "/profile/[id]/page": "app/profile/[id]/page.js"
