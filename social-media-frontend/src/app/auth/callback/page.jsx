@@ -12,7 +12,7 @@ export default function AuthCallback() {
 
   useEffect(() => {
     if (token) {
-      login(token); // ✅ auto redirects to dashboard
+      login(token);
     } else {
       router.push("/login");
     }
@@ -25,5 +25,5 @@ export default function AuthCallback() {
   );
 }
 
-// ✅ Force dynamic rendering to fix build error
+// ✅ This prevents Vercel from trying to prerender this page
 export const dynamic = "force-dynamic";
