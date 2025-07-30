@@ -28,3 +28,5 @@ export default function MessagesPage() {
     </AppLayout>
   );
 }
+
+export const dynamic = "force-dynamic";
