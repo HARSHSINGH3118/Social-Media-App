@@ -27,6 +27,9 @@ const {
 // 🧾 Auth Routes
 // ==============================
 router.post("/register", registerUser);
+router.get("/test", (req, res) => {
+  res.status(200).json({ message: "API working fine ✅" });
+});
 router.post("/login", loginUser);
 router.post("/oauth", oauthLogin);
 
