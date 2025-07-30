@@ -1,13 +1,1 @@
-{
-  "/api/news/route": "app/api/news/route.js",
-  "/api/youtube/route": "app/api/youtube/route.js",
-  "/create/page": "app/create/page.js",
-  "/dashboard/page": "app/dashboard/page.js",
-  "/explore/page": "app/explore/page.js",
-  "/favicon.ico/route": "app/favicon.ico/route.js",
-  "/login/page": "app/login/page.js",
-  "/messages/page": "app/messages/page.js",
-  "/notifications/page": "app/notifications/page.js",
-  "/page": "app/page.js",
-  "/profile/[id]/page": "app/profile/[id]/page.js"
-}
+{}
