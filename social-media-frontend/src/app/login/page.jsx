@@ -24,9 +24,7 @@ export default function LoginPage() {
   };
 
   const handleGoogleLogin = () => {
-    window.location.href =
-      process.env.NEXT_PUBLIC_GOOGLE_AUTH_URL ||
-      "https://social-media-app-326k.onrender.com/auth/google";
+    window.location.href = "http://localhost:5000/auth/google";
   };
 
   return (
