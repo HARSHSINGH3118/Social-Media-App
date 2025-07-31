@@ -13,10 +13,14 @@ export default function HomePage() {
 
   // Redirect logged-in users to dashboard
   useEffect(() => {
-    if (!loading && user) {
-      router.push("/dashboard");
+    if (!loading) {
+      if (user) {
+        router.push("/dashboard");
+      } else {
+        router.push("/login");
+      }
     }
-  }, [user, loading, router]);
+  }, [loading, user, router]);
 
   // Fetch public posts preview (only on client)
   useEffect(() => {

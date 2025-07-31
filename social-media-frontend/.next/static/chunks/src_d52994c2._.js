@@ -64,13 +64,17 @@ function HomePage() {
     // Redirect logged-in users to dashboard
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
         "HomePage.useEffect": ()=>{
-            if (!loading && user) {
-                router.push("/dashboard");
+            if (!loading) {
+                if (user) {
+                    router.push("/dashboard");
+                } else {
+                    router.push("/login");
+                }
             }
         }
     }["HomePage.useEffect"], [
-        user,
         loading,
+        user,
         router
     ]);
     // Fetch public posts preview (only on client)
@@ -97,7 +101,7 @@ function HomePage() {
                 children: "Welcome to Social App"
             }, void 0, false, {
                 fileName: "[project]/src/app/page.jsx",
-                lineNumber: 39,
+                lineNumber: 43,
                 columnNumber: 7
             }, this),
             posts.length > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -111,13 +115,13 @@ function HomePage() {
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/page.jsx",
-                lineNumber: 41,
+                lineNumber: 45,
                 columnNumber: 9
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/app/page.jsx",
-        lineNumber: 38,
+        lineNumber: 42,
         columnNumber: 5
     }, this);
 }
